@@ -1,0 +1,1687 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Complete Multi-Feature Dialer with SIM Selection</title>
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background-color: #e3e6ea;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+    }
+
+    .phone-screen {
+      width: 100%;
+      max-width: 390px;
+      height: 800px;
+      background: #ffffff;
+      display: flex;
+      flex-direction: column;
+      position: relative;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.15);
+      overflow: hidden;
+      border-radius: 20px;
+    }
+
+    .view-screen {
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      width: 100%;
+    }
+
+    .top-content-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      scroll-behavior: smooth;
+    }
+
+    .top-bar-header {
+      padding: 16px 20px 5px;
+      display: flex;
+      justify-content: flex-end;
+      gap: 20px;
+    }
+
+    .top-icon {
+      width: 22px;
+      height: 22px;
+      stroke: #333;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .title-section {
+      padding: 0 20px;
+    }
+
+    .app-title {
+      font-size: 34px;
+      font-weight: 500;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      padding-bottom: 8px;
+      position: relative;
+    }
+
+    .tab.active {
+      color: #111;
+      font-weight: 500;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 40%;
+      width: 20%;
+      height: 3px;
+      background-color: #2cc673;
+      border-radius: 2px;
+    }
+
+    .recents-list {
+      padding: 5px 0;
+    }
+
+    .recent-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      justify-content: space-between;
+    }
+
+    .recent-left {
+      display: flex;
+      align-items: flex-start;
+      gap: 14px;
+    }
+
+    .call-arrow {
+      width: 16px;
+      height: 16px;
+      margin-top: 3px;
+      stroke: #888;
+      stroke-width: 2;
+    }
+
+    .contact-info .name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .contact-info .badge-type {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .sim-badge {
+      border: 1px solid #aaa;
+      border-radius: 3px;
+      font-size: 10px;
+      padding: 0 3px;
+      font-weight: bold;
+    }
+
+    .recent-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .time-stamp {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .info-icon {
+      width: 20px;
+      height: 20px;
+      border: 1.5px solid #444;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .typing-options {
+      display: none;
+      flex-direction: column;
+      padding: 15px 20px;
+      gap: 22px;
+    }
+
+    .type-opt-row {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      font-size: 18px;
+      color: #111;
+      font-weight: 400;
+      cursor: pointer;
+    }
+
+    .type-opt-icon {
+      width: 24px;
+      height: 24px;
+      stroke: #333;
+      fill: none;
+      stroke-width: 2;
+    }
+
+    .number-bar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 10px 20px;
+      min-height: 50px;
+    }
+
+    .dots-menu-btn {
+      font-size: 22px;
+      color: #333;
+      visibility: hidden;
+      cursor: pointer;
+    }
+
+    .number-display {
+      font-size: 32px;
+      font-weight: 500;
+      color: #111;
+      letter-spacing: 2px;
+      word-break: break-all;
+      text-align: center;
+    }
+
+    .backspace-btn {
+      width: 30px;
+      height: 24px;
+      background: #333;
+      color: #fff;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 14px;
+      position: relative;
+    }
+
+    .backspace-btn::before {
+      content: '';
+      position: absolute;
+      left: -8px;
+      top: 0;
+      width: 0;
+      height: 0;
+      border-top: 12px solid transparent;
+      border-bottom: 12px solid transparent;
+      border-right: 8px solid #333;
+    }
+
+    .keypad-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      padding: 0 20px;
+      row-gap: 4px;
+    }
+
+    .key-btn {
+      background: none;
+      border: none;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 52px;
+      cursor: pointer;
+      border-radius: 12px;
+    }
+
+    .key-btn:active {
+      background-color: #f5f5f5;
+    }
+
+    .key-num {
+      font-size: 26px;
+      color: #111;
+      font-weight: 400;
+      line-height: 1;
+    }
+
+    .key-sub {
+      font-size: 9px;
+      color: #888;
+      margin-top: 2px;
+      letter-spacing: 1.5px;
+      font-weight: 500;
+    }
+
+    .action-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 10px 20px 10px;
+    }
+
+    .action-circle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .action-circle-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #333;
+      stroke-width: 2;
+    }
+
+    .whatsapp-btn {
+      background-color: #25d366;
+      border-radius: 50%;
+    }
+
+    .whatsapp-btn svg {
+      fill: white;
+      stroke: none;
+      width: 24px;
+      height: 24px;
+    }
+
+    .call-capsule-btn {
+      background-color: #2cc673;
+      height: 48px;
+      border-radius: 24px;
+      display: flex;
+      align-items: center;
+      width: 140px;
+      overflow: hidden;
+    }
+
+    .sim-segment {
+      flex: 1;
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 3px;
+      cursor: pointer;
+      border: none;
+      background: transparent;
+    }
+
+    .sim-segment:first-child {
+      border-right: 1px solid rgba(255, 255, 255, 0.25);
+    }
+
+    .sim-segment svg {
+      width: 18px;
+      height: 18px;
+      fill: white;
+    }
+
+    .sim-num {
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      margin-top: 5px;
+    }
+
+    .bottom-navbar {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding: 8px 0 12px;
+      border-top: 1px solid #f0f0f0;
+      background: #fff;
+    }
+
+    .nav-tab {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 4px;
+      color: #888;
+      font-size: 11px;
+      cursor: pointer;
+    }
+
+    .nav-tab.active {
+      color: #2cc673;
+    }
+
+    .nav-tab svg {
+      width: 20px;
+      height: 20px;
+      fill: currentColor;
+    }
+
+    .ulife-icon {
+      width: 18px;
+      height: 18px;
+      background-color: #888;
+      color: #fff;
+      border-radius: 3px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+    }
+
+    /* CHOOSE SIM POPUP MODAL STYLES */
+    .sim-chooser-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      justify-content: center;
+      align-items: flex-end;
+      z-index: 450;
+    }
+
+    .sim-chooser-card {
+      background: #ffffff;
+      width: 92%;
+      border-radius: 24px 24px 20px 20px;
+      padding: 22px 20px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      margin-bottom: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .sim-chooser-title {
+      font-size: 18px;
+      font-weight: 500;
+      color: #111;
+      margin-bottom: 2px;
+    }
+
+    .sim-option-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 10px 0;
+      cursor: pointer;
+      border-bottom: 1px solid #f2f2f2;
+    }
+
+    .sim-option-item:last-of-type {
+      border-bottom: none;
+    }
+
+    .sim-option-icon {
+      width: 24px;
+      height: 32px;
+      border: 1.5px solid #555;
+      border-radius: 4px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      font-size: 11px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    .sim-option-details .sim-name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .sim-option-details .sim-num-text {
+      font-size: 13px;
+      color: #666;
+      margin-top: 2px;
+    }
+
+    .sim-cancel-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: #333;
+      text-align: center;
+      padding: 10px 0 2px;
+      cursor: pointer;
+    }
+
+    .ussd-running-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.25);
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 25px;
+      z-index: 300;
+    }
+
+    .ussd-running-card {
+      background: #ffffff;
+      width: 90%;
+      border-radius: 24px;
+      padding: 24px 20px;
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+    }
+
+    .loading-dots {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      background-color: #9e9e9e;
+      border-radius: 50%;
+      animation: pulse 1.2s infinite ease-in-out;
+    }
+
+    .dot:nth-child(2) {
+      animation-delay: 0.3s;
+      width: 10px;
+      height: 10px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { opacity: 0.3; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.1); }
+    }
+
+    .ussd-running-text {
+      font-size: 18px;
+      color: #333;
+      font-weight: 400;
+    }
+
+    .ussd-dialog-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 20px;
+      z-index: 250;
+      transition: all 0.3s ease;
+    }
+
+    .ussd-dialog-overlay.keyboard-up {
+      align-items: center;
+      padding-bottom: 110px;
+    }
+
+    .ussd-dialog-card {
+      background: #ffffff;
+      width: 92%;
+      border-radius: 24px;
+      padding: 22px 20px 16px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      max-height: 85%;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .ussd-dialog-text {
+      font-size: 15px;
+      color: #333;
+      line-height: 1.45;
+      font-family: inherit;
+      white-space: pre-line;
+      margin-bottom: 14px;
+      overflow-y: auto;
+    }
+
+    .ussd-dialog-input-wrap {
+      border-bottom: 2px solid #2cc673;
+      margin-bottom: 18px;
+      padding-bottom: 2px;
+    }
+
+    .ussd-dialog-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 18px;
+      color: #111;
+      background: transparent;
+    }
+
+    .ussd-dialog-actions {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-top: 5px;
+    }
+
+    .ussd-dialog-btn {
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: #2cc673;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+    }
+
+    .ussd-dialog-divider {
+      width: 1px;
+      height: 18px;
+      background: #eee;
+    }
+
+    .msg-modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.35);
+      justify-content: center;
+      align-items: flex-end;
+      padding-bottom: 25px;
+      z-index: 200;
+    }
+
+    .msg-modal-card {
+      background: #ffffff;
+      width: 90%;
+      border-radius: 20px;
+      padding: 24px 20px 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+    }
+
+    .msg-modal-heading {
+      font-size: 20px;
+      font-weight: 500;
+      color: #111;
+      margin-bottom: 14px;
+    }
+
+    .msg-modal-body {
+      font-size: 15px;
+      color: #222;
+      line-height: 1.45;
+      margin-bottom: 22px;
+    }
+
+    .msg-modal-actions {
+      display: flex;
+      justify-content: center;
+    }
+
+    .msg-ok-btn {
+      color: #2cc673;
+      font-size: 17px;
+      font-weight: 600;
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 5px 20px;
+    }
+
+    /* MULTI-DATABASE SECRET ADMIN PANEL MODAL (TRIGGER: '0000') */
+    .admin-modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 600;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      width: 92%;
+      max-height: 90%;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+    }
+
+    .admin-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2cc673;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .admin-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 0 6px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+
+    .admin-field {
+      margin-bottom: 8px;
+    }
+
+    .admin-field label {
+      font-size: 11px;
+      color: #555;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .admin-field input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+    }
+
+    .admin-add-btn {
+      width: 100%;
+      background: #2cc673;
+      color: white;
+      border: none;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .db-list {
+      max-height: 120px;
+      overflow-y: auto;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 6px;
+      margin-bottom: 10px;
+    }
+
+    .db-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #ddd;
+    }
+
+    .db-item:last-child {
+      border-bottom: none;
+    }
+
+    .del-btn {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .admin-close-btn {
+      width: 100%;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* FAKE CALL SCREEN */
+    .fake-call-screen {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #111419;
+      color: white;
+      flex-direction: column;
+      justify-content: space-between;
+      align-items: center;
+      padding: 60px 20px 50px;
+      z-index: 500;
+    }
+
+    .call-contact-name {
+      font-size: 28px;
+      font-weight: 500;
+      margin-bottom: 8px;
+      text-align: center;
+    }
+
+    .call-status-timer {
+      font-size: 15px;
+      color: #2cc673;
+      letter-spacing: 1px;
+      text-align: center;
+    }
+
+    .call-grid-options {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 30px;
+      width: 100%;
+      padding: 0 20px;
+      margin-bottom: 40px;
+    }
+
+    .call-opt-btn {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: #ccc;
+    }
+
+    .call-opt-circle {
+      width: 54px;
+      height: 54px;
+      border-radius: 50%;
+      background: rgba(255,255,255,0.1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 20px;
+    }
+
+    .end-call-btn {
+      width: 68px;
+      height: 68px;
+      border-radius: 50%;
+      background: #ff3b30;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 4px 15px rgba(255, 59, 48, 0.4);
+    }
+
+    .end-call-btn svg {
+      width: 32px;
+      height: 32px;
+      fill: white;
+      transform: rotate(135deg);
+    }
+  </style>
+</head>
+<body>
+
+  <div class="phone-screen">
+
+    <!-- MAIN DIALER VIEW -->
+    <div class="view-screen" id="dialerView">
+      
+      <div class="top-content-area" id="topContentArea">
+        
+        <!-- Recents View -->
+        <div id="recentsView">
+          <div class="top-bar-header">
+            <svg class="top-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <svg class="top-icon" viewBox="0 0 24 24"><path d="M12 15a3 3 0 100-6 3 3 0 000 6z"/><path d="M19.4 15a1.65 1.65 0 00.33 1.82l.06.06a2 2 0 010 2.83 2 2 0 01-2.83 0l-.06-.06a1.65 1.65 0 00-1.82-.33 1.65 1.65 0 00-1 1.51V21a2 2 0 01-2 2 2 2 0 01-2-2v-.09A1.65 1.65 0 009 19.4a1.65 1.65 0 00-1.82.33l-.06.06a2 2 0 01-2.83 0 2 2 0 010-2.83l.06-.06a1.65 1.65 0 00.33-1.82 1.65 1.65 0 00-1.51-1H3a2 2 0 01-2-2 2 2 0 012-2h.09A1.65 1.65 0 004.6 9a1.65 1.65 0 00-.33-1.82l-.06-.06a2 2 0 010-2.83 2 2 0 012.83 0l.06.06a1.65 1.65 0 001.82.33H9a1.65 1.65 0 001-1.51V3a2 2 0 012-2 2 2 0 012 2v.09a1.65 1.65 0 001 1.51 1.65 1.65 0 001.82-.33l.06-.06a2 2 0 012.83 0 2 2 0 010 2.83l-.06.06a1.65 1.65 0 00-.33 1.82V9a1.65 1.65 0 001.51 1H21a2 2 0 012 2 2 2 0 01-2 2h-.09a1.65 1.65 0 00-1.51 1z"/></svg>
+          </div>
+
+          <div class="title-section">
+            <h1 class="app-title">Recents</h1>
+            <div class="tabs">
+              <div class="tab active">All</div>
+              <div class="tab">Missed Calls</div>
+            </div>
+          </div>
+
+          <div class="recents-list">
+            <div class="recent-item" onclick="triggerCallWithName('Baba Jan', '03084191378')">
+              <div class="recent-left">
+                <svg class="call-arrow" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                <div class="contact-info">
+                  <div class="name">Baba Jan</div>
+                  <div class="badge-type"><span class="sim-badge">2</span> Mobile</div>
+                </div>
+              </div>
+              <div class="recent-right">
+                <div class="time-stamp">7/30</div>
+                <div class="info-icon">i</div>
+              </div>
+            </div>
+
+            <div class="recent-item" onclick="triggerCallWithName('Molar Imtiaz', '03286454952')">
+              <div class="recent-left">
+                <svg class="call-arrow" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                <div class="contact-info">
+                  <div class="name">Molar Imtiaz</div>
+                  <div class="badge-type"><span class="sim-badge">2</span> Mobile</div>
+                </div>
+              </div>
+              <div class="recent-right">
+                <div class="time-stamp">7/30</div>
+                <div class="info-icon">i</div>
+              </div>
+            </div>
+
+            <div class="recent-item" onclick="triggerCallWithName('Arif Khan 💋💋', '03293362788')">
+              <div class="recent-left">
+                <svg class="call-arrow" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+                <div class="contact-info">
+                  <div class="name">Arif Khan 💋💋</div>
+                  <div class="badge-type"><span class="sim-badge">2</span> Mobile</div>
+                </div>
+              </div>
+              <div class="recent-right">
+                <div class="time-stamp">7/30</div>
+                <div class="info-icon">i</div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Typing Options View -->
+        <div class="typing-options" id="typingOptionsView">
+          <div class="type-opt-row">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create New Contact</span>
+          </div>
+          <div class="type-opt-row">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="11" x2="20" y2="17"/><line x1="17" y1="14" x2="23" y2="14"/></svg>
+            <span>Add to Existing Contact</span>
+          </div>
+          <div class="type-opt-row">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/><circle cx="8" cy="10" r="1"/><circle cx="12" cy="10" r="1"/><circle cx="16" cy="10" r="1"/></svg>
+            <span>Send SMS</span>
+          </div>
+          <div class="type-opt-row">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Meet Video Call</span>
+          </div>
+        </div>
+
+      </div>
+
+      <!-- Typed Number Bar -->
+      <div class="number-bar">
+        <span class="dots-menu-btn" id="dotsBtn">⋮</span>
+        <div class="number-display" id="display"></div>
+        <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigit()">✕</div>
+      </div>
+
+      <!-- Keypad Grid -->
+      <div class="keypad-grid">
+        <button class="key-btn" onclick="pressKey('1')"><span class="key-num">1</span><span class="key-sub">⧉</span></button>
+        <button class="key-btn" onclick="pressKey('2')"><span class="key-num">2</span><span class="key-sub">ABC</span></button>
+        <button class="key-btn" onclick="pressKey('3')"><span class="key-num">3</span><span class="key-sub">DEF</span></button>
+
+        <button class="key-btn" onclick="pressKey('4')"><span class="key-num">4</span><span class="key-sub">GHI</span></button>
+        <button class="key-btn" onclick="pressKey('5')"><span class="key-num">5</span><span class="key-sub">JKL</span></button>
+        <button class="key-btn" onclick="pressKey('6')"><span class="key-num">6</span><span class="key-sub">MNO</span></button>
+
+        <button class="key-btn" onclick="pressKey('7')"><span class="key-num">7</span><span class="key-sub">PQRS</span></button>
+        <button class="key-btn" onclick="pressKey('8')"><span class="key-num">8</span><span class="key-sub">TUV</span></button>
+        <button class="key-btn" onclick="pressKey('9')"><span class="key-num">9</span><span class="key-sub">WXYZ</span></button>
+
+        <button class="key-btn" onclick="pressKey('*')"><span class="key-num" style="font-size:30px;">*</span></button>
+        <button class="key-btn" onclick="pressKey('0')"><span class="key-num">0</span><span class="key-sub">+</span></button>
+        <button class="key-btn" onclick="pressKey('#')"><span class="key-num">#</span></button>
+      </div>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="action-circle-btn">
+          <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+        </button>
+
+        <div class="call-capsule-btn">
+          <button class="sim-segment" onclick="openSimChooserForTyped(1)">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="sim-num">1</span>
+          </button>
+          <button class="sim-segment" onclick="openSimChooserForTyped(2)">
+            <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+            <span class="sim-num">2</span>
+          </button>
+        </div>
+
+        <button class="action-circle-btn whatsapp-btn">
+          <svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg>
+        </button>
+
+        <button class="action-circle-btn">
+          <svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg>
+        </button>
+      </div>
+
+    </div>
+
+    <!-- BOTTOM NAVBAR -->
+    <div class="bottom-navbar">
+      <div class="nav-tab active">
+        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        <span>Recents</span>
+      </div>
+      <div class="nav-tab">
+        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        <span>Contacts</span>
+      </div>
+      <div class="nav-tab">
+        <div class="ulife-icon">$</div>
+        <span>Ulife</span>
+      </div>
+    </div>
+
+    <!-- CHOOSE SIM FOR THIS CALL MODAL (EXACT SCREEN SHOWN) -->
+    <div class="sim-chooser-overlay" id="simChooserModal">
+      <div class="sim-chooser-card">
+        <div class="sim-chooser-title">Choose SIM for This Call</div>
+        
+        <div class="sim-option-item" onclick="confirmSimSelection(1)">
+          <div class="sim-option-icon">1</div>
+          <div class="sim-option-details">
+            <div class="sim-name">Jazz</div>
+            <div class="sim-num-text">+92 329 0221378</div>
+          </div>
+        </div>
+
+        <div class="sim-option-item" onclick="confirmSimSelection(2)">
+          <div class="sim-option-icon">2</div>
+          <div class="sim-option-details">
+            <div class="sim-name">Jazz</div>
+            <div class="sim-num-text">+92 308 4191378</div>
+          </div>
+        </div>
+
+        <button class="sim-cancel-btn" onclick="closeSimChooser()">Cancel</button>
+      </div>
+    </div>
+
+    <!-- USSD LOADING OVERLAY -->
+    <div class="ussd-running-overlay" id="ussdRunningOverlay">
+      <div class="ussd-running-card">
+        <div class="loading-dots">
+          <div class="dot"></div>
+          <div class="dot"></div>
+        </div>
+        <div class="ussd-running-text">USSD code running...</div>
+      </div>
+    </div>
+
+    <!-- DYNAMIC AUTO-ADJUSTING USSD MODAL -->
+    <div class="ussd-dialog-overlay" id="ussdDialogModal">
+      <div class="ussd-dialog-card">
+        <div class="ussd-dialog-text" id="ussdDialogText"></div>
+        <div class="ussd-dialog-input-wrap" id="ussdInputWrap">
+          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" onfocus="adjustForKeyboard(true)" onblur="adjustForKeyboard(false)" />
+        </div>
+        <div class="ussd-dialog-actions">
+          <button class="ussd-dialog-btn" onclick="closeUssdDialog()">Cancel</button>
+          <div class="ussd-dialog-divider"></div>
+          <button class="ussd-dialog-btn" onclick="handleUssdSubmit()">Send</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MESSAGE POPUP MODAL -->
+    <div class="msg-modal-overlay" id="msgModal">
+      <div class="msg-modal-card">
+        <div class="msg-modal-heading" id="msgHeading">Jazz Message</div>
+        <div class="msg-modal-body" id="msgText">Connection problem or invalid MMI code.</div>
+        <div class="msg-modal-actions">
+          <button class="msg-ok-btn" onclick="closeMsgModal()">OK</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- MULTI-DATABASE SECRET ADMIN PANEL MODAL (TRIGGER: '0000') -->
+    <div class="admin-modal-overlay" id="adminModal">
+      <div class="admin-card">
+        <div class="admin-title">⚙️ Secret Admin Control Panel</div>
+
+        <div class="admin-field">
+          <label>Account Balance (Rs):</label>
+          <input type="number" id="adminAccountBalance" value="10000" />
+        </div>
+
+        <div class="admin-section-title">📱 Add Account Holder (Mobile Accounts)</div>
+        <div class="admin-field">
+          <label>Mobile Number (11 digits):</label>
+          <input type="text" id="newMobileNum" placeholder="e.g. 03084191378" />
+        </div>
+        <div class="admin-field">
+          <label>Account Holder Name:</label>
+          <input type="text" id="newHolderName" placeholder="e.g. AZIZ BIBI" />
+        </div>
+        <button class="admin-add-btn" onclick="addMobileRecord()">+ Add Mobile Account</button>
+
+        <div class="db-list" id="mobileDbList"></div>
+
+        <div class="admin-section-title">🏪 Add Merchant (Till ID Database)</div>
+        <div class="admin-field">
+          <label>Till ID Number:</label>
+          <input type="text" id="newTillId" placeholder="e.g. 845454" />
+        </div>
+        <div class="admin-field">
+          <label>Merchant / Shop Name:</label>
+          <input type="text" id="newMerchantName" placeholder="e.g. Quality Bakers Store" />
+        </div>
+        <button class="admin-add-btn" onclick="addTillRecord()">+ Add Till ID</button>
+
+        <div class="db-list" id="tillDbList"></div>
+
+        <button class="admin-close-btn" onclick="closeAdminPanel()">Save & Close</button>
+      </div>
+    </div>
+
+    <!-- FAKE CALL SCREEN INTERFACE -->
+    <div class="fake-call-screen" id="fakeCallScreen">
+      <div>
+        <div class="call-contact-name" id="callName">0329 3362788</div>
+        <div class="call-status-timer" id="callTimer">Ringing...</div>
+      </div>
+
+      <div class="call-grid-options">
+        <div class="call-opt-btn"><div class="call-opt-circle">🎙️</div>Mute</div>
+        <div class="call-opt-btn"><div class="call-opt-circle">⌨️</div>Keypad</div>
+        <div class="call-opt-btn"><div class="call-opt-circle">🔊</div>Speaker</div>
+        <div class="call-opt-btn"><div class="call-opt-circle">➕</div>Add call</div>
+        <div class="call-opt-btn"><div class="call-opt-circle">📹</div>Video</div>
+        <div class="call-opt-btn"><div class="call-opt-circle">👤</div>Contacts</div>
+      </div>
+
+      <button class="end-call-btn" onclick="endFakeCall()">
+        <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
+      </button>
+    </div>
+
+  </div>
+
+  <script>
+    let typedNumber = "";
+    let currentStep = "MAIN_MENU";
+    let historyStack = [];
+
+    let tempAccountNum = "";
+    let tempAmount = "";
+    let tempCompany = "";
+    let tempHolderName = "";
+
+    let pendingCallTarget = "";
+    let pendingCallName = "";
+
+    const REQUIRED_PIN = "0303";
+
+    let userBalance = 10000;
+    
+    let mobileAccountsDB = [
+      { number: "03084191378", name: "AZIZ BIBI" },
+      { number: "03293362788", name: "Ali Raza" }
+    ];
+
+    let tillIdsDB = [
+      { id: "845454", name: "Super General Store" },
+      { id: "123456", name: "JazzCash Agent Shop" }
+    ];
+
+    let callInterval = null;
+    let callSeconds = 0;
+    let audioCtx = null;
+    let ringOscillator = null;
+
+    function refreshDisplay() {
+      const displayElem = document.getElementById("display");
+      const recentsView = document.getElementById("recentsView");
+      const typingOptionsView = document.getElementById("typingOptionsView");
+      const dotsBtn = document.getElementById("dotsBtn");
+      const backspaceBtn = document.getElementById("backspaceBtn");
+
+      displayElem.innerText = typedNumber;
+
+      if (typedNumber.length > 0) {
+        recentsView.style.display = "none";
+        typingOptionsView.style.display = "flex";
+        dotsBtn.style.visibility = "visible";
+        backspaceBtn.style.display = "flex";
+      } else {
+        recentsView.style.display = "block";
+        typingOptionsView.style.display = "none";
+        dotsBtn.style.visibility = "hidden";
+        backspaceBtn.style.display = "none";
+      }
+    }
+
+    function pressKey(digit) {
+      typedNumber += digit;
+      refreshDisplay();
+    }
+
+    function deleteDigit() {
+      typedNumber = typedNumber.slice(0, -1);
+      refreshDisplay();
+    }
+
+    function adjustForKeyboard(isFocused) {
+      const modal = document.getElementById("ussdDialogModal");
+      if (isFocused) {
+        modal.classList.add("keyboard-up");
+      } else {
+        modal.classList.remove("keyboard-up");
+      }
+    }
+
+    function runUssdDelay(callback, customDelay = null) {
+      const ussdOverlay = document.getElementById("ussdRunningOverlay");
+      ussdOverlay.style.display = "flex";
+
+      const delay = customDelay || Math.floor(Math.random() * (2200 - 1000 + 1)) + 1000;
+      setTimeout(() => {
+        ussdOverlay.style.display = "none";
+        callback();
+      }, delay);
+    }
+
+    // SIM CHOOSER HANDLERS
+    function openSimChooserForTyped(simIndex) {
+      if (typedNumber.trim() === "") {
+        alert("Pehle number enter karein!");
+        return;
+      }
+      pendingCallTarget = typedNumber.trim();
+      pendingCallName = pendingCallTarget;
+      showSimChooserModal();
+    }
+
+    function triggerCallWithName(name, number) {
+      pendingCallTarget = number;
+      pendingCallName = name;
+      showSimChooserModal();
+    }
+
+    function showSimChooserModal() {
+      document.getElementById("simChooserModal").style.display = "flex";
+    }
+
+    function closeSimChooser() {
+      document.getElementById("simChooserModal").style.display = "none";
+    }
+
+    function confirmSimSelection(simNo) {
+      closeSimChooser();
+      
+      const cleanNum = pendingCallTarget;
+
+      // TRIGGER SECRET ADMIN PANEL WITH '0000'
+      if (cleanNum === "0000") {
+        renderAdminLists();
+        document.getElementById("adminModal").style.display = "flex";
+        typedNumber = "";
+        refreshDisplay();
+        return;
+      }
+
+      if (cleanNum.startsWith("*") && cleanNum.endsWith("#")) {
+        if (cleanNum === "*786#") {
+          historyStack = [];
+          runUssdDelay(() => showStep("MAIN_MENU"));
+        } else {
+          runUssdDelay(() => showInvalidMMI());
+        }
+        typedNumber = "";
+        refreshDisplay();
+      } else {
+        startFakeCall(pendingCallName, cleanNum, simNo);
+      }
+    }
+
+    function showInvalidMMI() {
+      document.getElementById("msgHeading").innerText = "Jazz Message";
+      document.getElementById("msgText").innerText = "Connection problem or invalid MMI code.";
+      document.getElementById("msgModal").style.display = "flex";
+    }
+
+    function closeMsgModal() {
+      document.getElementById("msgModal").style.display = "none";
+    }
+
+    // ADMIN DATABASE RENDER & FUNCTIONS
+    function renderAdminLists() {
+      document.getElementById("adminAccountBalance").value = userBalance;
+
+      let mobileHtml = "";
+      mobileAccountsDB.forEach((item, index) => {
+        mobileHtml += `<div class="db-item"><span>${item.number} - <b>${item.name}</b></span><span class="del-btn" onclick="deleteMobileRecord(${index})">✕</span></div>`;
+      });
+      document.getElementById("mobileDbList").innerHTML = mobileHtml || "No records added";
+
+      let tillHtml = "";
+      tillIdsDB.forEach((item, index) => {
+        tillHtml += `<div class="db-item"><span>ID: ${item.id} - <b>${item.name}</b></span><span class="del-btn" onclick="deleteTillRecord(${index})">✕</span></div>`;
+      });
+      document.getElementById("tillDbList").innerHTML = tillHtml || "No Till records added";
+    }
+
+    function addMobileRecord() {
+      const num = document.getElementById("newMobileNum").value.trim();
+      const name = document.getElementById("newHolderName").value.trim();
+      if (num && name) {
+        mobileAccountsDB.push({ number: num, name: name });
+        document.getElementById("newMobileNum").value = "";
+        document.getElementById("newHolderName").value = "";
+        renderAdminLists();
+      } else {
+        alert("Please enter both number and name!");
+      }
+    }
+
+    function deleteMobileRecord(index) {
+      mobileAccountsDB.splice(index, 1);
+      renderAdminLists();
+    }
+
+    function addTillRecord() {
+      const id = document.getElementById("newTillId").value.trim();
+      const name = document.getElementById("newMerchantName").value.trim();
+      if (id && name) {
+        tillIdsDB.push({ id: id, name: name });
+        document.getElementById("newTillId").value = "";
+        document.getElementById("newMerchantName").value = "";
+        renderAdminLists();
+      } else {
+        alert("Please enter both Till ID and Shop Name!");
+      }
+    }
+
+    function deleteTillRecord(index) {
+      tillIdsDB.splice(index, 1);
+      renderAdminLists();
+    }
+
+    function closeAdminPanel() {
+      const bal = document.getElementById("adminAccountBalance").value;
+      if (bal) userBalance = parseFloat(bal);
+      document.getElementById("adminModal").style.display = "none";
+    }
+
+    // MULTI-STEP USSD ENGINE WITH DATABASE SEARCH
+    function showStep(step) {
+      currentStep = step;
+      const dialogText = document.getElementById("ussdDialogText");
+      const inputElem = document.getElementById("ussdDialogInput");
+      const inputWrap = document.getElementById("ussdInputWrap");
+      
+      inputElem.value = "";
+      inputWrap.style.display = "block";
+
+      if (step === "MAIN_MENU") {
+        dialogText.innerText = `JazzCash\n1:Send Money\n2:Pay Bills\n3:Load & Bundles\n4:ReadyCash\n5:Payments\n6:My Account\n7:Savings & Insurance\n8:Rs 100 JazzLoad\n9:Buy Now Pay Later\n10:Till Payments\n11:Self Service`;
+      } 
+      else if (step === "SEND_MONEY_MENU") {
+        dialogText.innerText = `Send Money\n1:To Mobile Account\n2:To CNIC\n3:To Bank\n4:To Raast/IBAN\n5:My Favorites\n6:Cancel Transaction\n7:Redeem Gift\n00:Main Menu`;
+      } 
+      else if (step === "MOBILE_ACCOUNT_MENU") {
+        dialogText.innerText = `1:JazzCash\n2:Easypaisa Bank Limited\n3:Upaisa\n4:SadaPay\n5:NayaPay\n6:Konnect\n7:OPay\n8:OneZapp\n9:Digitt+\n10:YAP\n11:Payvay\n12:Hubpay\n13:Halan Microfinance Bank\n99:Next`;
+      } 
+      else if (step === "ENTER_NUMBER") {
+        dialogText.innerText = `Enter Receiver JazzCash Account Number (11 digits):\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "ENTER_RAAST_ID") {
+        dialogText.innerText = `Enter Receiver RAAST ID number (11 or 24 digits)\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "INVALID_NUMBER") {
+        dialogText.innerText = `Invalid number format, please enter valid digits\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "ENTER_AMOUNT") {
+        dialogText.innerText = `Enter Amount\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "RAAST_PURPOSE") {
+        dialogText.innerText = `Select Purpose of Payment:\n1:Family Support\n2:Educational Payment\n3:Utility Bill Payment\n4:Medical Payment\n5:Transport Payment\n6:Salary Disbursement\n7:Others\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "CONFIRMATION_JAZZCASH") {
+        dialogText.innerText = `Send Rs ${tempAmount} to ${tempHolderName}\n${tempAccountNum}. Fee: Rs. 1.00. Funds will be credited within 30 minutes.\nEnter MPIN to confirm.\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "CONFIRMATION_RAAST") {
+        dialogText.innerText = `Send Rs: ${tempAmount} to MUDDASIR ABBAS,\nIBAN No: PK77********9411.\nEnter MPIN to confirm\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "PAY_BILLS_MENU") {
+        dialogText.innerText = `Pay Bills\n1:Electricity\n2:Gas\n3:Water\n4:Telephone\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "ENTER_BILL_REF") {
+        dialogText.innerText = `Enter Consumer Reference Number:\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "BILL_CONFIRMATION") {
+        dialogText.innerText = `Bill Amount Rs 1500 for Ref: ${tempAccountNum}\nEnter MPIN to confirm.\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "LOAD_BUNDLES_MENU") {
+        dialogText.innerText = `Load & Bundles\n1:JazzLoad\n2:Other Network Load\n3:Data Bundles\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "MY_ACCOUNT_MENU") {
+        dialogText.innerText = `My Account\n1:Manage MPIN\n2:Check Balance\n3:Mini Statement\n4:Debit Card\n5:RAAST ID Management\n6:Bank Transfers\n7:Redeem Rewards\n8:Update Email\n9:Change language\n00:Main Menu`;
+      }
+      else if (step === "CHECK_BALANCE_PIN") {
+        dialogText.innerText = `Enter your 4 digit MPIN. Fee: Rs. 0.58\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "ENTER_TILL_ID") {
+        dialogText.innerText = `Enter Till ID:\n0:Back\n00:Main Menu\n1:Other Raast Options`;
+      }
+      else if (step === "INVALID_TILL") {
+        dialogText.innerText = `Invalid Till number\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "TILL_AMOUNT") {
+        dialogText.innerText = `Payment to ${tempHolderName} (Till ID: ${tempAccountNum})\nEnter Amount:\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "TILL_CONFIRMATION") {
+        dialogText.innerText = `Pay Rs ${tempAmount} to ${tempHolderName} (Till ID: ${tempAccountNum})\nEnter MPIN to confirm:\n0:Back\n00:Main Menu`;
+      }
+
+      document.getElementById("ussdDialogModal").style.display = "flex";
+      inputElem.focus();
+    }
+
+    function handleUssdSubmit() {
+      const inputVal = document.getElementById("ussdDialogInput").value.trim();
+
+      runUssdDelay(() => {
+        if (inputVal === "00") {
+          historyStack = [];
+          showStep("MAIN_MENU");
+          return;
+        }
+
+        if (inputVal === "0" && historyStack.length > 0) {
+          const prevStep = historyStack.pop();
+          showStep(prevStep);
+          return;
+        }
+
+        if (currentStep === "MAIN_MENU") {
+          if (inputVal === "1") { historyStack.push("MAIN_MENU"); showStep("SEND_MONEY_MENU"); }
+          else if (inputVal === "2") { historyStack.push("MAIN_MENU"); showStep("PAY_BILLS_MENU"); }
+          else if (inputVal === "3") { historyStack.push("MAIN_MENU"); showStep("LOAD_BUNDLES_MENU"); }
+          else if (inputVal === "6") { historyStack.push("MAIN_MENU"); showStep("MY_ACCOUNT_MENU"); }
+          else if (inputVal === "10") { historyStack.push("MAIN_MENU"); showStep("ENTER_TILL_ID"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        } 
+        else if (currentStep === "MY_ACCOUNT_MENU") {
+          if (inputVal === "2") { historyStack.push("MY_ACCOUNT_MENU"); showStep("CHECK_BALANCE_PIN"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        }
+        else if (currentStep === "CHECK_BALANCE_PIN") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = `Your JazzCash account balance is Rs. ${userBalance.toFixed(2)}.`;
+            document.getElementById("msgModal").style.display = "flex";
+          } else {
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = "Invalid MPIN. Transaction failed.";
+            document.getElementById("msgModal").style.display = "flex";
+          }
+        }
+        else if (currentStep === "PAY_BILLS_MENU") {
+          if (["1", "2", "3", "4"].includes(inputVal)) { historyStack.push("PAY_BILLS_MENU"); showStep("ENTER_BILL_REF"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        }
+        else if (currentStep === "ENTER_BILL_REF") {
+          if (inputVal.length >= 5) {
+            tempAccountNum = inputVal;
+            historyStack.push("ENTER_BILL_REF");
+            showStep("BILL_CONFIRMATION");
+          } else {
+            showStep("ENTER_BILL_REF");
+          }
+        }
+        else if (currentStep === "BILL_CONFIRMATION") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= 1500;
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = `Bill Payment of Rs. 1500 Successful for Ref: ${tempAccountNum}. Remaining Balance: Rs. ${userBalance.toFixed(2)}.`;
+            document.getElementById("msgModal").style.display = "flex";
+          } else {
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = "Invalid MPIN. Transaction failed.";
+            document.getElementById("msgModal").style.display = "flex";
+          }
+        }
+        else if (currentStep === "LOAD_BUNDLES_MENU") {
+          if (inputVal === "1" || inputVal === "2") { historyStack.push("LOAD_BUNDLES_MENU"); showStep("ENTER_NUMBER"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        }
+        else if (currentStep === "SEND_MONEY_MENU") {
+          if (inputVal === "1") { tempCompany = "JazzCash"; historyStack.push("SEND_MONEY_MENU"); showStep("MOBILE_ACCOUNT_MENU"); }
+          else if (inputVal === "4") { tempCompany = "Raast"; historyStack.push("SEND_MONEY_MENU"); showStep("ENTER_RAAST_ID"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        } 
+        else if (currentStep === "MOBILE_ACCOUNT_MENU") {
+          if (inputVal === "1") { historyStack.push("MOBILE_ACCOUNT_MENU"); showStep("ENTER_NUMBER"); }
+          else { closeUssdDialog(); showInvalidMMI(); }
+        } 
+        else if (currentStep === "ENTER_RAAST_ID") {
+          if (inputVal.length >= 11) {
+            tempAccountNum = inputVal;
+            tempHolderName = "MUDDASIR ABBAS";
+            historyStack.push("ENTER_RAAST_ID");
+            showStep("ENTER_AMOUNT");
+          } else {
+            showStep("INVALID_NUMBER");
+          }
+        }
+        else if (currentStep === "ENTER_NUMBER" || currentStep === "INVALID_NUMBER") {
+          if (inputVal.length === 11 && !isNaN(inputVal)) {
+            tempAccountNum = inputVal;
+            let found = mobileAccountsDB.find(item => item.number === inputVal);
+            tempHolderName = found ? found.name : "AZIZ BIBI";
+            historyStack.push("ENTER_NUMBER");
+            showStep("ENTER_AMOUNT");
+          } else {
+            showStep("INVALID_NUMBER");
+          }
+        } 
+        else if (currentStep === "ENTER_AMOUNT") {
+          if (inputVal !== "" && !isNaN(inputVal) && parseInt(inputVal) > 0) {
+            tempAmount = inputVal;
+            historyStack.push("ENTER_AMOUNT");
+            if (tempCompany === "Raast") {
+              showStep("RAAST_PURPOSE");
+            } else {
+              showStep("CONFIRMATION_JAZZCASH");
+            }
+          } else {
+            showStep("ENTER_AMOUNT");
+          }
+        } 
+        else if (currentStep === "RAAST_PURPOSE") {
+          if (["1","2","3","4","5","6","7"].includes(inputVal)) {
+            historyStack.push("RAAST_PURPOSE");
+            showStep("CONFIRMATION_RAAST");
+          } else {
+            showStep("RAAST_PURPOSE");
+          }
+        }
+        else if (currentStep === "CONFIRMATION_JAZZCASH") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= parseFloat(tempAmount);
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been deducted from your account and will be transferred to beneficiary account within 30 minutes. Fee: Rs. 1.00\n1:Cancel Transaction\n99:Next`;
+            document.getElementById("msgModal").style.display = "flex";
+          } else {
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = "Invalid MPIN. Transaction failed.";
+            document.getElementById("msgModal").style.display = "flex";
+          }
+        }
+        else if (currentStep === "CONFIRMATION_RAAST") {
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= parseFloat(tempAmount);
+            document.getElementById("ussdDialogText").innerText = `Rs ${parseFloat(tempAmount).toFixed(2)} sent to MUDDASIR ABBAS via IBAN PK77********9411. Balance: Rs. ${userBalance.toFixed(2)}. TID: 719429240766.\n1:Save as Favorite\n0:Back\n00:Main Menu`;
+            document.getElementById("ussdDialogInput").value = "";
+          } else {
+            closeUssdDialog();
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = "Invalid MPIN. Transaction failed.";
+            document.getElementById("msgModal").style.display = "flex";
+          }
+        }
+        else if (currentStep === "ENTER_TILL_ID" || currentStep === "INVALID_TILL") {
+          let foundTill = tillIdsDB.find(item => item.id === inputVal);
+          if (foundTill) {
+            tempAccountNum = foundTill.id;
+            tempHolderName = foundTill.name;
+            historyStack.push("ENTER_TILL_ID");
+            showStep("TILL_AMOUNT");
+          } else {
+            showStep("INVALID_TILL");
+          }
+        }
+        else if (currentStep === "TILL_AMOUNT") {
+          if (inputVal !== "" && !isNaN(inputVal) && parseInt(inputVal) > 0) {
+            tempAmount = inputVal;
+            historyStack.push("TILL_AMOUNT");
+            showStep("TILL_CONFIRMATION");
+          } else {
+            showStep("TILL_AMOUNT");
+          }
+        }
+        else if (currentStep === "TILL_CONFIRMATION") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= parseFloat(tempAmount);
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = `Payment Successful! Rs. ${tempAmount} paid instantly to ${tempHolderName} (Till ID: ${tempAccountNum}). Remaining balance: Rs. ${userBalance.toFixed(2)}.`;
+            document.getElementById("msgModal").style.display = "flex";
+          } else {
+            document.getElementById("msgHeading").innerText = "Jazz Message";
+            document.getElementById("msgText").innerText = "Invalid MPIN. Transaction failed.";
+            document.getElementById("msgModal").style.display = "flex";
+          }
+        }
+      });
+    }
+
+    function closeUssdDialog() {
+      document.getElementById("ussdDialogModal").style.display = "none";
+    }
+
+    // AUDIO RINGING GENERATOR
+    function playRingtone() {
+      try {
+        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        ringOscillator = audioCtx.createOscillator();
+        let gainNode = audioCtx.createGain();
+
+        ringOscillator.type = 'sine';
+        ringOscillator.frequency.setValueAtTime(440, audioCtx.currentTime);
+        gainNode.gain.setValueAtTime(0.1, audioCtx.currentTime);
+
+        ringOscillator.connect(gainNode);
+        gainNode.connect(audioCtx.destination);
+        ringOscillator.start();
+      } catch (e) {}
+    }
+
+    function stopRingtone() {
+      if (ringOscillator) {
+        try { ringOscillator.stop(); ringOscillator.disconnect(); } catch(e){}
+      }
+      if (audioCtx) {
+        try { audioCtx.close(); } catch(e){}
+      }
+    }
+
+    function startFakeCall(name, num, simNo) {
+      document.getElementById("callName").innerHTML = `${name}<br><span style="font-size:15px; color:#aaa; font-weight:normal;">[${simNo}] ${num} Pakistan</span>`;
+      document.getElementById("callTimer").innerText = "Ringing...";
+      document.getElementById("fakeCallScreen").style.display = "flex";
+
+      playRingtone();
+
+      callSeconds = 0;
+      setTimeout(() => {
+        stopRingtone();
+        document.getElementById("callTimer").innerText = "00:00";
+
+        callInterval = setInterval(() => {
+          callSeconds++;
+          const mins = String(Math.floor(callSeconds / 60)).padStart(2, '0');
+          const secs = String(callSeconds % 60).padStart(2, '0');
+          document.getElementById("callTimer").innerText = `${mins}:${secs}`;
+        }, 1000);
+      }, 3000);
+    }
+
+    function endFakeCall() {
+      stopRingtone();
+      clearInterval(callInterval);
+      document.getElementById("fakeCallScreen").style.display = "none";
+      typedNumber = "";
+      refreshDisplay();
+    }
+  </script>
+</body>
+</html>
