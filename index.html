@@ -14,7 +14,6 @@
       user-select: none;
     }
 
-    /* FULL WHITE BACKGROUND & SCREEN STYLING */
     html, body {
       width: 100%;
       height: 100%;
@@ -132,10 +131,28 @@
     }
 
     .top-bar-header {
-      padding: 16px 20px 5px;
+      padding: 12px 20px 5px;
       display: flex;
       justify-content: flex-end;
-      gap: 20px;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .search-input-container {
+      display: none;
+      width: 100%;
+      padding: 0 5px;
+    }
+
+    .search-input-container input {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 14px;
+      background: #f9f9f9;
+      user-select: text;
     }
 
     .top-icon {
@@ -144,6 +161,7 @@
       stroke: #333;
       fill: none;
       stroke-width: 2;
+      cursor: pointer;
     }
 
     .title-section {
@@ -151,7 +169,7 @@
     }
 
     .app-title {
-      font-size: 34px;
+      font-size: 32px;
       font-weight: 500;
       color: #111;
       margin-bottom: 10px;
@@ -281,8 +299,8 @@
     .typing-options {
       display: none;
       flex-direction: column;
-      padding: 15px 20px;
-      gap: 22px;
+      padding: 10px 20px;
+      gap: 16px;
       background: #ffffff;
     }
 
@@ -290,14 +308,14 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      font-size: 18px;
+      font-size: 16px;
       color: #111;
       cursor: pointer;
     }
 
     .type-opt-icon {
-      width: 24px;
-      height: 24px;
+      width: 22px;
+      height: 22px;
       stroke: #333;
       fill: none;
       stroke-width: 2;
@@ -307,8 +325,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 10px 20px;
-      min-height: 50px;
+      padding: 5px 15px;
+      min-height: 48px;
       background: #ffffff;
     }
 
@@ -318,13 +336,17 @@
       visibility: hidden;
     }
 
-    .number-display {
-      font-size: 32px;
+    .number-display-input {
+      font-size: 26px;
       font-weight: 500;
       color: #111;
-      letter-spacing: 2px;
-      word-break: break-all;
+      letter-spacing: 1px;
       text-align: center;
+      border: none;
+      outline: none;
+      width: 100%;
+      background: transparent;
+      direction: ltr;
     }
 
     .backspace-btn {
@@ -366,7 +388,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 52px;
+      height: 50px;
       cursor: pointer;
       border-radius: 12px;
     }
@@ -376,7 +398,7 @@
     }
 
     .key-num {
-      font-size: 26px;
+      font-size: 24px;
       color: #111;
       font-weight: 400;
       line-height: 1;
@@ -393,7 +415,7 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 10px 20px;
+      padding: 8px 20px;
       background: #ffffff;
     }
 
@@ -552,8 +574,6 @@
 
     .avatar-blue { background: #4fc3f7; }
     .avatar-orange { background: #ff9800; }
-    .avatar-green { background: #4caf50; }
-    .avatar-purple { background: #ab47bc; }
 
     .msg-content {
       flex: 1;
@@ -580,7 +600,7 @@
       color: #70757a;
     }
 
-    /* 8558 CHAT DETAIL VIEW */
+    /* CHAT DETAIL VIEW */
     .chat-detail-screen {
       display: none;
       position: absolute;
@@ -675,6 +695,7 @@
       padding: 8px 14px;
       font-size: 14px;
       outline: none;
+      user-select: text;
     }
 
     .chat-send-btn {
@@ -740,13 +761,14 @@
       margin-bottom: 2px;
     }
 
-    .admin-field input {
+    .admin-field input, .admin-field textarea {
       width: 100%;
       padding: 8px;
       border: 1px solid #ccc;
       border-radius: 6px;
       font-size: 13px;
       outline: none;
+      user-select: text;
     }
 
     .admin-add-btn {
@@ -779,10 +801,6 @@
       font-size: 12px;
       padding: 4px 0;
       border-bottom: 1px dashed #ddd;
-    }
-
-    .db-item:last-child {
-      border-bottom: none;
     }
 
     .del-btn {
@@ -964,50 +982,44 @@
       cursor: pointer;
     }
 
-    /* USSD RUNNING OVERLAY */
-    .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay {
+    /* OVERLAYS ALIGNED TO CENTER / TOP TO STAY ABOVE KEYBOARD */
+    .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: rgba(0, 0, 0, 0.35);
+      background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: flex-end;
-      padding-bottom: 24px;
+      align-items: center; /* MOVED TO CENTER SO KEYBOARD DOES NOT COVER IT */
+      padding: 20px;
       z-index: 850;
-      transition: all 0.25s ease;
-    }
-
-    .ussd-dialog-overlay.keyboard-up {
-      align-items: center;
-      padding-bottom: 120px;
     }
 
     .ussd-running-card {
       background: #ffffff;
-      width: 90%;
-      border-radius: 20px;
-      padding: 18px 20px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+      width: 95%;
+      border-radius: 24px;
+      padding: 26px 24px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
-      gap: 16px;
+      gap: 18px;
     }
 
     .running-dots-pill {
       display: flex;
       align-items: center;
-      gap: 4px;
+      gap: 6px;
       background: #e2e8f0;
-      padding: 6px 10px;
-      border-radius: 12px;
+      padding: 8px 14px;
+      border-radius: 16px;
     }
 
     .running-dot {
-      width: 6px;
-      height: 6px;
+      width: 8px;
+      height: 8px;
       background-color: #64748b;
       border-radius: 50%;
       animation: runningPulse 1s infinite ease-in-out;
@@ -1023,25 +1035,25 @@
     }
 
     .ussd-running-text-style {
-      font-size: 16px;
-      color: #334155;
-      font-weight: 400;
+      font-size: 17px;
+      color: #1e293b;
+      font-weight: 500;
     }
 
     .ussd-dialog-card, .msg-prompt-card {
       background: #ffffff;
-      width: 92%;
+      width: 95%;
       border-radius: 24px;
-      padding: 22px 20px 16px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+      padding: 24px 20px 18px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
     }
 
     .ussd-dialog-text, .msg-prompt-text {
       font-size: 15px;
-      color: #333;
-      line-height: 1.45;
+      color: #222;
+      line-height: 1.5;
       white-space: pre-line;
-      margin-bottom: 14px;
+      margin-bottom: 16px;
     }
 
     .ussd-dialog-input-wrap {
@@ -1049,12 +1061,17 @@
       margin-bottom: 18px;
     }
 
+    /* SIMPLE TEXT PLAIN INPUT STYLE */
     .ussd-dialog-input {
       width: 100%;
       border: none;
       outline: none;
       font-size: 18px;
+      font-weight: normal;
       background: transparent;
+      color: #111;
+      height: 36px;
+      user-select: text;
     }
 
     .ussd-dialog-actions, .msg-prompt-actions {
@@ -1085,13 +1102,44 @@
       flex: 1;
       text-align: center;
     }
+
+    .mmi-error-card {
+      background: #ffffff;
+      width: 90%;
+      border-radius: 28px;
+      padding: 24px 22px 18px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+    }
+
+    .mmi-error-title {
+      font-size: 20px;
+      font-weight: 600;
+      color: #111;
+      margin-bottom: 14px;
+    }
+
+    .mmi-error-text {
+      font-size: 15px;
+      color: #444;
+      line-height: 1.4;
+      margin-bottom: 24px;
+    }
+
+    .mmi-error-ok-btn {
+      text-align: center;
+      color: #2cc673;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      padding: 6px;
+    }
   </style>
 </head>
 <body>
 
   <div class="phone-screen">
 
-    <!-- TOP 8558 SMS NOTIFICATION POPUP -->
+    <!-- TOP SMS NOTIFICATION BANNER -->
     <div class="top-notification-banner" id="smsNotifBanner" onclick="openChatDetailScreen()">
       <div class="notif-top-row">
         <div class="notif-icon">👤</div>
@@ -1113,7 +1161,10 @@
         
         <div id="recentsView">
           <div class="top-bar-header">
-            <svg class="top-icon" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            <div class="search-input-container" id="searchContainer">
+              <input type="text" id="searchInput" placeholder="Search contacts..." oninput="handleSearch(this.value)" />
+            </div>
+            <svg class="top-icon" viewBox="0 0 24 24" onclick="toggleSearch()"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
           </div>
 
           <div class="title-section">
@@ -1129,15 +1180,15 @@
         </div>
 
         <div class="typing-options" id="typingOptionsView">
-          <div class="type-opt-row"><svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Create New Contact</span></div>
-          <div class="type-opt-row"><svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Send SMS</span></div>
+          <div class="type-opt-row" onclick="createNewContact()"><svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Create New Contact</span></div>
+          <div class="type-opt-row" onclick="sendSmsToTyped()"><svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Send SMS</span></div>
         </div>
       </div>
 
       <div class="number-bar">
         <span class="dots-menu-btn" id="dotsBtn">⋮</span>
-        <div class="number-display" id="display"></div>
-        <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigit()">✕</div>
+        <input type="text" class="number-display-input" id="display" readonly placeholder="" />
+        <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigitAtCursor()">✕</div>
       </div>
 
       <div class="keypad-grid">
@@ -1150,7 +1201,7 @@
         <button class="key-btn" onclick="pressKey('7')"><span class="key-num">7</span><span class="key-sub">PQRS</span></button>
         <button class="key-btn" onclick="pressKey('8')"><span class="key-num">8</span><span class="key-sub">TUV</span></button>
         <button class="key-btn" onclick="pressKey('9')"><span class="key-num">9</span><span class="key-sub">WXYZ</span></button>
-        <button class="key-btn" onclick="pressKey('*')"><span class="key-num" style="font-size:30px;">*</span></button>
+        <button class="key-btn" onclick="pressKey('*')"><span class="key-num" style="font-size:28px;">*</span></button>
         <button class="key-btn" onclick="pressKey('0')"><span class="key-num">0</span><span class="key-sub">+</span></button>
         <button class="key-btn" onclick="pressKey('#')"><span class="key-num">#</span></button>
       </div>
@@ -1161,7 +1212,7 @@
           <button class="sim-segment" onclick="openSimChooserForTyped(1)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">1</span></button>
           <button class="sim-segment" onclick="openSimChooserForTyped(2)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">2</span></button>
         </div>
-        <button class="action-circle-btn whatsapp-btn"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg></button>
+        <button class="action-circle-btn whatsapp-btn" onclick="openWhatsApp()"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg></button>
         <button class="action-circle-btn"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
       </div>
 
@@ -1172,7 +1223,7 @@
       </div>
     </div>
 
-    <!-- GOOGLE MESSAGES INBOX VIEW -->
+    <!-- MESSAGES INBOX VIEW -->
     <div class="messages-inbox-screen" id="messagesInboxScreen">
       <div class="msg-header">
         <div class="msg-header-title">Google Messages</div>
@@ -1187,7 +1238,6 @@
           </div>
           <div class="msg-time">1 min</div>
         </div>
-
         <div class="msg-thread-item">
           <div class="msg-avatar avatar-orange">S</div>
           <div class="msg-content">
@@ -1196,37 +1246,10 @@
           </div>
           <div class="msg-time">12:44 PM</div>
         </div>
-
-        <div class="msg-thread-item">
-          <div class="msg-avatar avatar-green">C</div>
-          <div class="msg-content">
-            <div class="msg-sender-name">Chacha Riaz</div>
-            <div class="msg-snippet">Apko is number 03288913250 k O...</div>
-          </div>
-          <div class="msg-time">9:41 AM</div>
-        </div>
-
-        <div class="msg-thread-item">
-          <div class="msg-avatar avatar-blue">J</div>
-          <div class="msg-content">
-            <div class="msg-sender-name">Jazz4G</div>
-            <div class="msg-snippet">Enjoy the best Mobile and Online Banking experience with JazzCas...</div>
-          </div>
-          <div class="msg-time">9:36 AM</div>
-        </div>
-
-        <div class="msg-thread-item">
-          <div class="msg-avatar avatar-purple">J</div>
-          <div class="msg-content">
-            <div class="msg-sender-name">JazzCash</div>
-            <div class="msg-snippet">Jeetein Rs.100! Dear C...</div>
-          </div>
-          <div class="msg-time">Sun</div>
-        </div>
       </div>
     </div>
 
-    <!-- 8558 CHAT DETAIL VIEW WITH USER INPUT FIELD -->
+    <!-- CHAT DETAIL VIEW -->
     <div class="chat-detail-screen" id="chatDetailScreen">
       <div class="chat-top-bar">
         <span class="chat-back-btn" onclick="closeChatDetailScreen()">←</span>
@@ -1237,11 +1260,7 @@
       </div>
       <div class="chat-body-area" id="chatBodyArea">
         <div class="chat-bubble">transaction use same wallet.Please specify different wallets for each parties and initiate the transaction again.</div>
-        <div class="chat-bubble">Your MPIN will be locked if another attempt fails. If you do not know your MPIN, please dial *786*6*1*2# to reset or call on helpline 4444</div>
         <div class="chat-timestamp-center">7:23 PM</div>
-        <div class="chat-bubble">Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.</div>
-        <div class="chat-bubble">Your transaction have failed, reason :CARD NOT ON FILE..TID:719550090103.</div>
-        <div class="chat-bubble">Your transaction have failed, reason :INVALID ACCOUNT..TID:719550180587.</div>
         <div class="chat-bubble">Rs 780.46 is your available balance on JazzCash Mobile A/C: AZIZ BIBI Fee: 0.58, as of 03/08/2026 at 07:45:44 PM.</div>
       </div>
       <div class="chat-bottom-input-bar">
@@ -1260,6 +1279,22 @@
           <input type="number" id="adminAccountBalance" value="780.46" />
         </div>
 
+        <div class="admin-section-title">🔮 Add Custom USSD Code (Non-*786#)</div>
+        <div class="admin-field">
+          <label>Custom USSD Code (e.g. *111#):</label>
+          <input type="text" id="customUssdCode" placeholder="e.g. *111#" />
+        </div>
+        <div class="admin-field">
+          <label>First Prompt Menu Message:</label>
+          <textarea id="customUssdMenuText" rows="2" placeholder="e.g. Enter Option Number:"></textarea>
+        </div>
+        <div class="admin-field">
+          <label>Final Response Message (Stops Process):</label>
+          <textarea id="customUssdResponseText" rows="3" placeholder="e.g. Action completed successfully!"></textarea>
+        </div>
+        <button class="admin-add-btn" onclick="addCustomUssdRule()">+ Save Custom USSD Code</button>
+        <div class="db-list" id="customUssdDbList"></div>
+
         <div class="admin-section-title">📱 Add Mobile Account (JazzCash)</div>
         <div class="admin-field">
           <label>Mobile Number (11 digits):</label>
@@ -1270,7 +1305,6 @@
           <input type="text" id="newHolderName" placeholder="e.g. AZIZ BIBI" />
         </div>
         <button class="admin-add-btn" onclick="addMobileRecord()">+ Add Mobile Account</button>
-
         <div class="db-list" id="mobileDbList"></div>
 
         <div class="admin-section-title">🏪 Add Merchant (Till ID Database)</div>
@@ -1283,7 +1317,6 @@
           <input type="text" id="newMerchantName" placeholder="e.g. MASHALLAH_MOBILE_SHOP" />
         </div>
         <button class="admin-add-btn" onclick="addTillRecord()">+ Add Till ID</button>
-
         <div class="db-list" id="tillDbList"></div>
 
         <button class="admin-close-btn" onclick="closeAdminPanel()">Save & Close</button>
@@ -1296,7 +1329,6 @@
         <div class="call-contact-name" id="callName">0329 3362788</div>
         <div class="call-status-timer" id="callTimer">Ringing...</div>
       </div>
-
       <div class="call-grid-options">
         <div class="call-opt-btn"><div class="call-opt-circle">🎙️</div>Mute</div>
         <div class="call-opt-btn"><div class="call-opt-circle">⌨️</div>Keypad</div>
@@ -1305,7 +1337,6 @@
         <div class="call-opt-btn"><div class="call-opt-circle">📹</div>Video</div>
         <div class="call-opt-btn"><div class="call-opt-circle">👤</div>Contacts</div>
       </div>
-
       <button class="end-call-btn" onclick="endFakeCall()">
         <svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg>
       </button>
@@ -1315,7 +1346,6 @@
     <div class="sim-chooser-overlay" id="simChooserModal">
       <div class="sim-chooser-card">
         <div class="sim-chooser-title">Choose SIM for This Call</div>
-        
         <div class="sim-option-item" onclick="confirmSimSelection(1)">
           <div class="sim-option-icon">1</div>
           <div class="sim-option-details">
@@ -1323,7 +1353,6 @@
             <div class="sim-num-text">+92 329 0221378</div>
           </div>
         </div>
-
         <div class="sim-option-item" onclick="confirmSimSelection(2)">
           <div class="sim-option-icon">2</div>
           <div class="sim-option-details">
@@ -1331,12 +1360,11 @@
             <div class="sim-num-text">+92 308 4191378</div>
           </div>
         </div>
-
         <button class="sim-cancel-btn" onclick="closeSimChooser()">Cancel</button>
       </div>
     </div>
 
-    <!-- USSD RUNNING OVERLAY -->
+    <!-- EXPANDED USSD RUNNING OVERLAY -->
     <div class="ussd-running-overlay" id="ussdRunningOverlay">
       <div class="ussd-running-card">
         <div class="running-dots-pill">
@@ -1347,12 +1375,12 @@
       </div>
     </div>
 
-    <!-- USSD DIALOG POPUP -->
+    <!-- USSD DIALOG POPUP (CENTERED, CLEAN PLAIN TEXT INPUT) -->
     <div class="ussd-dialog-overlay" id="ussdDialogModal">
       <div class="ussd-dialog-card">
         <div class="ussd-dialog-text" id="ussdDialogText"></div>
         <div class="ussd-dialog-input-wrap">
-          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" onfocus="adjustForKeyboard(true)" onblur="adjustForKeyboard(false)" />
+          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" placeholder="" />
         </div>
         <div class="ussd-dialog-actions">
           <button class="ussd-btn-cancel" onclick="closeUssdDialog()">Cancel</button>
@@ -1361,7 +1389,7 @@
       </div>
     </div>
 
-    <!-- USSD PROMPT RESPONSE MODAL (With OK Button) -->
+    <!-- USSD PROMPT RESPONSE MODAL -->
     <div class="msg-prompt-overlay" id="msgPromptModal">
       <div class="msg-prompt-card">
         <div class="msg-prompt-text" id="msgPromptText"></div>
@@ -1371,30 +1399,64 @@
       </div>
     </div>
 
+    <!-- INVALID MMI CODE ERROR MODAL -->
+    <div class="mmi-error-overlay" id="mmiErrorModal">
+      <div class="mmi-error-card">
+        <div class="mmi-error-title">Jazz Message</div>
+        <div class="mmi-error-text">Connection problem or invalid MMI code.</div>
+        <div class="mmi-error-ok-btn" onclick="closeMmiErrorModal()">OK</div>
+      </div>
+    </div>
+
   </div>
 
   <script>
-    if ('serviceWorker' in navigator) {
-      const swCode = `
-        const CACHE_NAME = 'jazzcash-pwa-v9';
-        self.addEventListener('install', e => e.waitUntil(caches.open(CACHE_NAME).then(c => c.addAll(['./']))));
-        self.addEventListener('fetch', e => e.respondWith(caches.match(e.request).then(res => res || fetch(e.request))));
-      `;
-      const blob = new Blob([swCode], { type: 'application/javascript' });
-      navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
-    }
-
-    let typedNumber = "";
     let currentStep = "MAIN_MENU";
-
     let tempAccountNum = "";
     let tempAmount = "";
+    let tempBillRef = "";
     let tempHolderName = "";
-
     let pendingCallTarget = "";
     let pendingCallName = "";
     const REQUIRED_PIN = "0303";
     let userBalance = 780.46;
+
+    let activeCustomRule = null;
+    let customUssdRules = {}; 
+
+    let officialContacts = [
+      { name: "Baba Jan", number: "03084191378" },
+      { name: "Molar Imtiaz", number: "03286454952" },
+      { name: "Arif Khan", number: "03293362788" },
+      { name: "Imran Ali", number: "03131472760" },
+      { name: "Chacha Riaz", number: "03288913250" },
+      { name: "Asif Khlid J", number: "03004812390" },
+      { name: "Zeenab", number: "03457174930" },
+      { name: "Muhammad Usman", number: "03017894561" },
+      { name: "Hamza Malik", number: "03216549872" },
+      { name: "Shahid Iqbal", number: "03023344556" },
+      { name: "Tariq Mahmood", number: "03059988776" },
+      { name: "Bilal Ahmed", number: "03431122334" },
+      { name: "Kamran Akmal", number: "03335566778" },
+      { name: "Zohaib Hassan", number: "03124455667" },
+      { name: "Rashid Minhas", number: "03068877665" }
+    ];
+
+    let recentsHistoryDB = [
+      { name: "Zeenab", number: "03457174930", sim: 2, time: "07:49 PM" },
+      { name: "Imran Ali", number: "03131472760", sim: 2, time: "06:28 PM" },
+      { name: "Asif Khlid J", number: "03004812390", sim: 2, time: "04:01 PM" },
+      { name: "Muhammad Usman", number: "03017894561", sim: 1, time: "02:15 PM" },
+      { name: "Hamza Malik", number: "03216549872", sim: 1, time: "01:10 PM" },
+      { name: "Shahid Iqbal", number: "03023344556", sim: 2, time: "11:45 AM" },
+      { name: "Tariq Mahmood", number: "03059988776", sim: 1, time: "Yesterday" },
+      { name: "Bilal Ahmed", number: "03431122334", sim: 2, time: "Yesterday" },
+      { name: "Kamran Akmal", number: "03335566778", sim: 1, time: "Yesterday" },
+      { name: "Zohaib Hassan", number: "03124455667", sim: 2, time: "02 Aug" },
+      { name: "Rashid Minhas", number: "03068877665", sim: 1, time: "01 Aug" },
+      { name: "Chacha Riaz", number: "03288913250", sim: 2, time: "31 Jul" },
+      { name: "Molar Imtiaz", number: "03286454952", sim: 1, time: "30 Jul" }
+    ];
 
     let accountsDB = [
       { number: "03084191378", name: "AZIZ BIBI" },
@@ -1408,23 +1470,6 @@
       { id: "983843924", name: "HOT BITE PIZZA AND FAST FOOD" }
     ];
 
-    let officialContacts = [
-      { name: "Baba Jan", number: "03084191378" },
-      { name: "Molar Imtiaz", number: "03286454952" },
-      { name: "Arif Khan", number: "03293362788" },
-      { name: "Imran Ali", number: "03131472760" },
-      { name: "Chacha Riaz", number: "03288913250" },
-      { name: "Asif Khlid J", number: "03004812390" },
-      { name: "Zeenab", number: "03457174930" },
-      { name: "Muddasir Abbas", number: "03219082341" }
-    ];
-
-    let recentsHistoryDB = [
-      { name: "Zeenab", number: "03457174930", sim: 2, time: "07:49 PM" },
-      { name: "Imran Ali", number: "03131472760", sim: 2, time: "06:28 PM" },
-      { name: "Asif Khlid J", number: "03004812390", sim: 2, time: "04:01 PM" }
-    ];
-
     let fakeCallTimeout = null;
 
     window.onload = function() {
@@ -1432,10 +1477,11 @@
       renderContacts();
     };
 
-    function renderRecents() {
+    function renderRecents(filteredList = null) {
       const list = document.getElementById("recentsList");
       let html = "";
-      recentsHistoryDB.forEach(item => {
+      let data = filteredList || recentsHistoryDB;
+      data.forEach(item => {
         html += `
           <div class="recent-item" onclick="triggerCallWithName('${item.name}', '${item.number}')">
             <div class="recent-left">
@@ -1452,13 +1498,14 @@
           </div>
         `;
       });
-      list.innerHTML = html;
+      list.innerHTML = html || `<div style="text-align:center; padding:20px; color:#888;">No recents found</div>`;
     }
 
-    function renderContacts() {
+    function renderContacts(filteredList = null) {
       const list = document.getElementById("contactsList");
       let html = "";
-      officialContacts.forEach(c => {
+      let data = filteredList || officialContacts;
+      data.forEach(c => {
         const initial = c.name.charAt(0).toUpperCase();
         html += `
           <div class="contact-item" onclick="triggerCallWithName('${c.name}', '${c.number}')">
@@ -1472,7 +1519,27 @@
           </div>
         `;
       });
-      list.innerHTML = html;
+      list.innerHTML = html || `<div style="text-align:center; padding:20px; color:#888;">No contacts found</div>`;
+    }
+
+    function toggleSearch() {
+      const container = document.getElementById("searchContainer");
+      if (container.style.display === "block") {
+        container.style.display = "none";
+        renderRecents();
+        renderContacts();
+      } else {
+        container.style.display = "block";
+        document.getElementById("searchInput").focus();
+      }
+    }
+
+    function handleSearch(query) {
+      let q = query.toLowerCase();
+      let filteredRecents = recentsHistoryDB.filter(r => r.name.toLowerCase().includes(q) || r.number.includes(q));
+      let filteredContacts = officialContacts.filter(c => c.name.toLowerCase().includes(q) || c.number.includes(q));
+      renderRecents(filteredRecents);
+      renderContacts(filteredContacts);
     }
 
     function switchNavTab(tab) {
@@ -1500,15 +1567,21 @@
       }
     }
 
-    function refreshDisplay() {
+    function getActiveInputField() {
+      if (document.getElementById("ussdDialogModal").style.display === "flex") {
+        return document.getElementById("ussdDialogInput");
+      }
+      return document.getElementById("display");
+    }
+
+    function onDisplayInputChange() {
       const displayElem = document.getElementById("display");
       const recentsView = document.getElementById("recentsView");
       const typingOptionsView = document.getElementById("typingOptionsView");
       const backspaceBtn = document.getElementById("backspaceBtn");
+      const val = displayElem.value;
 
-      displayElem.innerText = typedNumber;
-
-      if (typedNumber.length > 0) {
+      if (val.length > 0) {
         recentsView.style.display = "none";
         typingOptionsView.style.display = "flex";
         backspaceBtn.style.display = "flex";
@@ -1520,18 +1593,40 @@
     }
 
     function pressKey(digit) {
-      typedNumber += digit;
-      refreshDisplay();
+      const input = getActiveInputField();
+      input.value = input.value + digit;
+
+      if (input.id === "display") onDisplayInputChange();
     }
 
-    function deleteDigit() {
-      typedNumber = typedNumber.slice(0, -1);
-      refreshDisplay();
+    function deleteDigitAtCursor() {
+      const input = getActiveInputField();
+      let text = input.value;
+      if (text.length > 0) {
+        input.value = text.substring(0, text.length - 1);
+      }
+      if (input.id === "display") onDisplayInputChange();
+    }
+
+    function openWhatsApp() {
+      const input = document.getElementById("display");
+      let num = input.value.trim();
+      if (!num) {
+        alert("پہلے کوئی نمبر لکھیں!");
+        return;
+      }
+      let cleanNum = num.replace(/[^0-9]/g, '');
+      if (cleanNum.startsWith("0")) {
+        cleanNum = "92" + cleanNum.substring(1);
+      }
+      window.open(`https://wa.me/${cleanNum}`, '_blank');
     }
 
     function openSimChooserForTyped(simIndex) {
-      if (typedNumber.trim() === "") return;
-      pendingCallTarget = typedNumber.trim();
+      const input = document.getElementById("display");
+      let num = input.value.trim();
+      if (num === "") return;
+      pendingCallTarget = num;
       pendingCallName = pendingCallTarget;
       document.getElementById("simChooserModal").style.display = "flex";
     }
@@ -1550,16 +1645,14 @@
       closeSimChooser();
       const cleanNum = pendingCallTarget;
 
-      // SECRET ADMIN PANEL TRIGGER WITH '0000'
       if (cleanNum === "0000") {
         renderAdminLists();
         document.getElementById("adminModal").style.display = "flex";
-        typedNumber = "";
-        refreshDisplay();
+        document.getElementById("display").value = "";
+        onDisplayInputChange();
         return;
       }
 
-      // DO NOT ADD USSD CODES (CONTAINING * OR #) TO RECENT CALL LOGS
       const isUssdCode = cleanNum.includes("*") || cleanNum.includes("#");
 
       if (!isUssdCode) {
@@ -1572,26 +1665,52 @@
           time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
         });
         renderRecents();
-
         startFakeRingingCall(nameToLog, cleanNum, simNo);
       } else {
-        let body = cleanNum.replace(/^[*]/, '').replace(/[#]$/, '');
-        let parts = body.split("*");
+        if (customUssdRules[cleanNum]) {
+          activeCustomRule = customUssdRules[cleanNum];
+          runUssdDelay(() => {
+            currentStep = "CUSTOM_USSD_INPUT";
+            showCustomUssdStep(activeCustomRule.menu);
+          });
+        } 
+        else {
+          let body = cleanNum.replace(/^[*]/, '').replace(/[#]$/, '');
+          let parts = body.split("*");
 
-        if (parts[0] === "786") {
-          if (parts.length === 1) {
-            runUssdDelay(() => showStep("MAIN_MENU"));
+          if (parts[0] === "786") {
+            if (parts.length === 1) {
+              runUssdDelay(() => showStep("MAIN_MENU"));
+            } else {
+              runUssdDelay(() => processMultiStringUSSD(parts.slice(1)));
+            }
           } else {
-            runUssdDelay(() => processMultiStringUSSD(parts.slice(1)));
+            runUssdDelay(() => showMmiErrorModal());
           }
         }
       }
 
-      typedNumber = "";
-      refreshDisplay();
+      document.getElementById("display").value = "";
+      onDisplayInputChange();
     }
 
-    /* FAKE CALL RINGING AND AUTO-CUT FUNCTIONALITY */
+    function showCustomUssdStep(menuText) {
+      const dialogText = document.getElementById("ussdDialogText");
+      const inputElem = document.getElementById("ussdDialogInput");
+      inputElem.value = "";
+      dialogText.innerText = menuText;
+      document.getElementById("ussdDialogModal").style.display = "flex";
+      setTimeout(() => { inputElem.focus(); }, 100);
+    }
+
+    function showMmiErrorModal() {
+      document.getElementById("mmiErrorModal").style.display = "flex";
+    }
+
+    function closeMmiErrorModal() {
+      document.getElementById("mmiErrorModal").style.display = "none";
+    }
+
     function startFakeRingingCall(name, num, simNo) {
       document.getElementById("callName").innerHTML = `${name}<br><span style="font-size:14px; color:#aaa; font-weight:normal;">[${simNo}] ${num}</span>`;
       document.getElementById("callTimer").innerText = "Ringing...";
@@ -1599,9 +1718,7 @@
 
       fakeCallTimeout = setTimeout(() => {
         document.getElementById("callTimer").innerText = "User busy at moment";
-        setTimeout(() => {
-          endFakeCall();
-        }, 2000);
+        setTimeout(() => { endFakeCall(); }, 2000);
       }, 8000);
     }
 
@@ -1610,9 +1727,15 @@
       document.getElementById("fakeCallScreen").style.display = "none";
     }
 
-    // ADMIN PANEL FUNCTIONS
+    /* ADMIN PANEL FUNCTIONS */
     function renderAdminLists() {
       document.getElementById("adminAccountBalance").value = userBalance;
+
+      let ussdHtml = "";
+      for (let code in customUssdRules) {
+        ussdHtml += `<div class="db-item"><span><b>Code:</b> ${code}</span><span class="del-btn" onclick="deleteCustomUssdRule('${code}')">✕</span></div>`;
+      }
+      document.getElementById("customUssdDbList").innerHTML = ussdHtml || "No Custom USSD Triggers Added";
 
       let mobileHtml = "";
       accountsDB.forEach((item, index) => {
@@ -1625,6 +1748,27 @@
         tillHtml += `<div class="db-item"><span>ID: ${item.id} - <b>${item.name}</b></span><span class="del-btn" onclick="deleteTillRecord(${index})">✕</span></div>`;
       });
       document.getElementById("tillDbList").innerHTML = tillHtml || "No Till IDs Added";
+    }
+
+    function addCustomUssdRule() {
+      const code = document.getElementById("customUssdCode").value.trim();
+      const menu = document.getElementById("customUssdMenuText").value.trim();
+      const response = document.getElementById("customUssdResponseText").value.trim();
+
+      if (code && menu && response) {
+        customUssdRules[code] = { menu: menu, response: response };
+        document.getElementById("customUssdCode").value = "";
+        document.getElementById("customUssdMenuText").value = "";
+        document.getElementById("customUssdResponseText").value = "";
+        renderAdminLists();
+      } else {
+        alert("Enter Code, Menu Prompt, and Response!");
+      }
+    }
+
+    function deleteCustomUssdRule(code) {
+      delete customUssdRules[code];
+      renderAdminLists();
     }
 
     function addMobileRecord() {
@@ -1670,11 +1814,11 @@
     }
 
     function processMultiStringUSSD(cmds) {
-      if (cmds[0] === "6") { // My Account Options
+      if (cmds[0] === "6") {
         if (cmds.length === 1) showStep("MY_ACCOUNT_MENU");
         else if (cmds[1] === "2") showStep("CHECK_BALANCE_PIN");
       }
-      else if (cmds[0] === "1") { // Send Money
+      else if (cmds[0] === "1") {
         if (cmds.length === 1) showStep("SEND_MONEY_MENU");
         else if (cmds[1] === "1") {
           if (cmds.length === 2) showStep("ENTER_NUMBER");
@@ -1688,20 +1832,11 @@
       }
     }
 
-    function adjustForKeyboard(isFocused) {
-      const modal = document.getElementById("ussdDialogModal");
-      if (isFocused) modal.classList.add("keyboard-up");
-      else modal.classList.remove("keyboard-up");
-    }
-
-    /* RANDOM 5 TO 10 SECONDS USSD LOADING */
     function runUssdDelay(callback) {
       closeUssdDialog();
-
       const ussdOverlay = document.getElementById("ussdRunningOverlay");
       ussdOverlay.style.display = "flex";
-
-      const delay = Math.floor(Math.random() * (10000 - 5000 + 1)) + 5000;
+      const delay = Math.floor(Math.random() * (2200 - 1200 + 1)) + 1200;
 
       setTimeout(() => {
         ussdOverlay.style.display = "none";
@@ -1709,7 +1844,7 @@
       }, delay);
     }
 
-    /* USSD FLOW ENGINE */
+    // ALL BUILT-IN STEPS
     function showStep(step) {
       currentStep = step;
       const dialogText = document.getElementById("ussdDialogText");
@@ -1719,6 +1854,27 @@
       if (step === "MAIN_MENU") {
         dialogText.innerText = `JazzCash\n1:Send Money\n2:Pay Bills\n3:Load & Bundles\n4:ReadyCash\n5:Payments\n6:My Account\n7:Savings & Insurance\n8:Rs 100 JazzLoad\n9:Buy Now Pay Later\n10:Till Payments\n11:Self Service`;
       } 
+      else if (step === "PAY_BILLS_MENU") {
+        dialogText.innerText = `Pay Bills\n1:Electricity\n2:Gas\n3:Water\n4:Telephone\n5:Internet\n00:Main Menu`;
+      }
+      else if (step === "BILL_REF_INPUT") {
+        dialogText.innerText = `Enter Bill Consumer / Reference Number:\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "BILL_CONFIRMATION") {
+        dialogText.innerText = `Electricity Bill Payment: Consumer No ${tempBillRef}\nAmount: Rs 1450.00, Fee: Rs 0.00\nEnter MPIN to confirm payment:\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "LOAD_BUNDLES_MENU") {
+        dialogText.innerText = `Load & Bundles\n1:Jazz Load\n2:Zong Load\n3:Telenor Load\n4:Ufone Load\n00:Main Menu`;
+      }
+      else if (step === "LOAD_NUMBER_INPUT") {
+        dialogText.innerText = `Enter Mobile Number for Load (11 digits):\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "LOAD_AMOUNT_INPUT") {
+        dialogText.innerText = `Enter Load Amount:\n0:Back\n00:Main Menu`;
+      }
+      else if (step === "LOAD_CONFIRMATION") {
+        dialogText.innerText = `Mobile Load Rs ${tempAmount} on ${tempAccountNum}\nEnter MPIN to confirm:\n0:Back\n00:Main Menu`;
+      }
       else if (step === "MY_ACCOUNT_MENU") {
         dialogText.innerText = `1:Manage MPIN\n2:Check Balance\n3:Mini Statement\n4:Debit Card\n5:RAAST ID Management\n6:Bank Transfers\n7:Redeem Rewards\n8:Update Email\n9:Change language\n00:Main Menu`;
       }
@@ -1740,7 +1896,6 @@
       else if (step === "CONFIRMATION_JAZZCASH") {
         let matched = accountsDB.find(a => a.number === tempAccountNum);
         tempHolderName = matched ? matched.name : "AZIZ BIBI";
-
         dialogText.innerText = `Send Rs ${tempAmount} to ${tempHolderName}\n(${tempAccountNum}). Fee: Rs. 1.00. Funds will be credited within 30 minutes.\nEnter MPIN to confirm.\n0:Back\n00:Main Menu`;
       }
       else if (step === "ENTER_TILL_ID") {
@@ -1749,13 +1904,11 @@
       else if (step === "TILL_AMOUNT") {
         let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
         tempHolderName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
-
         dialogText.innerText = `Payment to ${tempHolderName} (Till ID: ${tempAccountNum})\nEnter Amount:\n0:Back\n00:Main Menu`;
       }
       else if (step === "TILL_CONFIRMATION") {
         let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
         tempHolderName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
-
         dialogText.innerText = `Pay Rs ${parseFloat(tempAmount).toFixed(2)} to Till ID: ${tempAccountNum} at ${tempHolderName}\nFee Rs 1.00.\nEnter MPIN to confirm\n0:Back\n00:Main Menu`;
       }
       else {
@@ -1763,24 +1916,125 @@
       }
 
       document.getElementById("ussdDialogModal").style.display = "flex";
-      inputElem.focus();
+      setTimeout(() => { inputElem.focus(); }, 100);
     }
 
+    // FULL COMPREHENSIVE SUBMIT LOGIC HANDLER
     function handleUssdSubmit() {
       const inputVal = document.getElementById("ussdDialogInput").value.trim();
 
       runUssdDelay(() => {
+        if (currentStep === "CUSTOM_USSD_INPUT") {
+          closeUssdDialog();
+          if (activeCustomRule && activeCustomRule.response) {
+            openMsgPromptModal(activeCustomRule.response);
+          }
+          activeCustomRule = null;
+          return;
+        }
+
         if (inputVal === "00") {
           showStep("MAIN_MENU");
           return;
         }
 
+        // 1. MAIN MENU
         if (currentStep === "MAIN_MENU") {
           if (inputVal === "1") showStep("SEND_MONEY_MENU");
+          else if (inputVal === "2") showStep("PAY_BILLS_MENU");
+          else if (inputVal === "3") showStep("LOAD_BUNDLES_MENU");
           else if (inputVal === "6") showStep("MY_ACCOUNT_MENU");
           else if (inputVal === "10") showStep("ENTER_TILL_ID");
           else showStep("MAIN_MENU");
         } 
+        
+        // 2. PAY BILLS FLOW
+        else if (currentStep === "PAY_BILLS_MENU") {
+          showStep("BILL_REF_INPUT");
+        }
+        else if (currentStep === "BILL_REF_INPUT") {
+          tempBillRef = inputVal;
+          showStep("BILL_CONFIRMATION");
+        }
+        else if (currentStep === "BILL_CONFIRMATION") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= 1450.00;
+            if (userBalance < 0) userBalance = 0;
+            const tid = Math.floor(819400000000 + Math.random() * 90000000);
+            const msg = `Bill Payment of Rs 1450.00 successful for Consumer ID ${tempBillRef}. Fee Rs 0.00, TID: ${tid}. Remaining Bal: Rs ${userBalance.toFixed(2)}.`;
+            openMsgPromptModal(msg);
+            schedule8558Notification(msg, 3000);
+          } else {
+            const wrongPinMsg = `Dear User, MPIN entered is not correct.`;
+            openMsgPromptModal(wrongPinMsg);
+          }
+        }
+
+        // 3. MOBILE LOAD FLOW
+        else if (currentStep === "LOAD_BUNDLES_MENU") {
+          showStep("LOAD_NUMBER_INPUT");
+        }
+        else if (currentStep === "LOAD_NUMBER_INPUT") {
+          tempAccountNum = inputVal;
+          showStep("LOAD_AMOUNT_INPUT");
+        }
+        else if (currentStep === "LOAD_AMOUNT_INPUT") {
+          tempAmount = inputVal;
+          showStep("LOAD_CONFIRMATION");
+        }
+        else if (currentStep === "LOAD_CONFIRMATION") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= parseFloat(tempAmount);
+            if (userBalance < 0) userBalance = 0;
+            const tid = Math.floor(919400000000 + Math.random() * 90000000);
+            const msg = `Mobile Load of Rs ${parseFloat(tempAmount).toFixed(2)} to ${tempAccountNum} successful. TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
+            openMsgPromptModal(msg);
+            schedule8558Notification(msg, 3000);
+          } else {
+            const wrongPinMsg = `Dear User, MPIN entered is not correct.`;
+            openMsgPromptModal(wrongPinMsg);
+          }
+        }
+
+        // 4. SEND MONEY FLOW
+        else if (currentStep === "SEND_MONEY_MENU") {
+          if (inputVal === "1") showStep("MOBILE_ACCOUNT_MENU");
+          else showStep("MOBILE_ACCOUNT_MENU");
+        }
+        else if (currentStep === "MOBILE_ACCOUNT_MENU") {
+          showStep("ENTER_NUMBER");
+        }
+        else if (currentStep === "ENTER_NUMBER") {
+          tempAccountNum = inputVal;
+          showStep("ENTER_AMOUNT");
+        }
+        else if (currentStep === "ENTER_AMOUNT") {
+          tempAmount = inputVal;
+          showStep("CONFIRMATION_JAZZCASH");
+        }
+        else if (currentStep === "CONFIRMATION_JAZZCASH") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            userBalance -= parseFloat(tempAmount);
+            if (userBalance < 0) userBalance = 0;
+            
+            const promptMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been deducted from your account. It will be transferred to beneficiary account within 30 minutes. Please dial *786*1*6*1# to cancel this transaction.`;
+            openMsgPromptModal(promptMsg);
+            schedule8558Notification(promptMsg, 4000);
+
+            const tid = Math.floor(719400000000 + Math.random() * 90000000);
+            const successMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been successfully transferred to ${tempHolderName} (${tempAccountNum}). Fee: 0.00, TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
+            schedule8558Notification(successMsg, 18000);
+          } else {
+            const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
+            openMsgPromptModal(wrongPinMsg);
+            schedule8558Notification(wrongPinMsg, 3000);
+          }
+        }
+
+        // 5. MY ACCOUNT FLOW
         else if (currentStep === "MY_ACCOUNT_MENU") {
           if (inputVal === "2") showStep("CHECK_BALANCE_PIN");
           else showStep("MY_ACCOUNT_MENU");
@@ -1796,7 +2050,6 @@
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
 
             const balMsg = `Rs ${userBalance.toFixed(2)} is your available balance on JazzCash Mobile A/C: AZIZ BIBI Fee: 0.58, as of ${dateStr} at ${timeStr}.`;
-            
             openMsgPromptModal(balMsg);
             schedule8558Notification(balMsg, 3000);
           } else {
@@ -1805,43 +2058,8 @@
             schedule8558Notification(wrongPinMsg, 3000);
           }
         }
-        else if (currentStep === "SEND_MONEY_MENU") {
-          if (inputVal === "1") showStep("MOBILE_ACCOUNT_MENU");
-          else showStep("SEND_MONEY_MENU");
-        } 
-        else if (currentStep === "MOBILE_ACCOUNT_MENU") {
-          if (inputVal === "1") showStep("ENTER_NUMBER");
-          else showStep("ENTER_NUMBER");
-        } 
-        else if (currentStep === "ENTER_NUMBER") {
-          tempAccountNum = inputVal;
-          showStep("ENTER_AMOUNT");
-        } 
-        else if (currentStep === "ENTER_AMOUNT") {
-          tempAmount = inputVal;
-          showStep("CONFIRMATION_JAZZCASH");
-        } 
-        else if (currentStep === "CONFIRMATION_JAZZCASH") {
-          closeUssdDialog();
-          
-          if (inputVal === REQUIRED_PIN) {
-            userBalance -= parseFloat(tempAmount);
-            if (userBalance < 0) userBalance = 0;
-            
-            const promptMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been deducted from your account. It will be transferred to beneficiary account within 30 minutes. Please dial *786*1*6*1# to cancel this transaction.`;
-            openMsgPromptModal(promptMsg);
 
-            schedule8558Notification(promptMsg, 5000);
-
-            const tid = Math.floor(719400000000 + Math.random() * 90000000);
-            const successMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been successfully transferred to ${tempHolderName} (${tempAccountNum}). Fee: 0.00, TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
-            schedule8558Notification(successMsg, 25000);
-          } else {
-            const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
-            openMsgPromptModal(wrongPinMsg);
-            schedule8558Notification(wrongPinMsg, 3000);
-          }
-        }
+        // 6. TILL PAYMENTS FLOW
         else if (currentStep === "ENTER_TILL_ID") {
           tempAccountNum = inputVal;
           showStep("TILL_AMOUNT");
@@ -1852,7 +2070,6 @@
         }
         else if (currentStep === "TILL_CONFIRMATION") {
           closeUssdDialog();
-          
           if (inputVal === REQUIRED_PIN) {
             userBalance -= parseFloat(tempAmount);
             if (userBalance < 0) userBalance = 0;
@@ -1863,9 +2080,8 @@
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
             
             const msg = `Rs ${parseFloat(tempAmount).toFixed(2)} paid to ${tempHolderName}, Till ID: ${tempAccountNum} on ${dateStr} at ${timeStr}. Fee 0.00, TID: ${tid} via QR Code.`;
-            
             openMsgPromptModal(`Payment Successful!\n${msg}`);
-            schedule8558Notification(msg, 5000);
+            schedule8558Notification(msg, 4000);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
             openMsgPromptModal(wrongPinMsg);
@@ -1879,7 +2095,6 @@
       document.getElementById("ussdDialogModal").style.display = "none";
     }
 
-    /* SCREEN PROMPT MODAL HANDLERS */
     function openMsgPromptModal(text) {
       document.getElementById("msgPromptText").innerText = text;
       document.getElementById("msgPromptModal").style.display = "flex";
@@ -1889,7 +2104,6 @@
       document.getElementById("msgPromptModal").style.display = "none";
     }
 
-    /* SCHEDULED SMS NOTIFICATION HANDLER */
     function schedule8558Notification(msgText, delayMs = 5000) {
       setTimeout(() => {
         trigger8558SmsNotification(msgText);
@@ -1948,6 +2162,14 @@
     function closeChatDetailScreen() {
       document.getElementById("chatDetailScreen").style.display = "none";
       document.getElementById("messagesInboxScreen").style.display = "flex";
+    }
+
+    function createNewContact() {
+      alert("Create New Contact Option Clicked");
+    }
+
+    function sendSmsToTyped() {
+      openChatDetailScreen();
     }
   </script>
 </body>
