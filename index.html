@@ -982,7 +982,7 @@
       cursor: pointer;
     }
 
-    /* OVERLAYS ALIGNED TO TOP WITH PADDING TO PREVENT KEYBOARD OVERLAP */
+    /* DEFAULT: ALL OVERLAYS STAND AT BOTTOM / LOWER AREA */
     .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
@@ -992,10 +992,18 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: flex-start; /* top alignment for proper keyboard clearance */
-      padding: 30px 15px;
+      align-items: flex-end; /* نیچے ظاہر ہو */
+      padding: 20px 15px;
       z-index: 850;
       overflow-y: auto;
+      transition: align-items 0.2s ease, padding-top 0.2s ease;
+    }
+
+    /* WHEN TYPING/FOCUSING INPUT: MOVES UP SO KEYBOARD DOES NOT COVER IT */
+    .ussd-dialog-overlay:focus-within, 
+    .ussd-dialog-overlay.focused-top {
+      align-items: flex-start !important;
+      padding-top: 15px !important;
     }
 
     .ussd-running-card {
@@ -1007,7 +1015,7 @@
       display: flex;
       align-items: center;
       gap: 18px;
-      margin-top: 20px;
+      margin-bottom: 30px;
     }
 
     .running-dots-pill {
@@ -1045,12 +1053,12 @@
     .ussd-dialog-card, .msg-prompt-card {
       background: #ffffff;
       width: 95%;
-      max-height: 70vh; /* keeps modal contained */
-      overflow-y: auto;  /* scrollable menu if list is long */
+      max-height: 75vh;
+      overflow-y: auto;
       border-radius: 24px;
       padding: 22px 20px 18px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-      margin-top: 15px;
+      margin-bottom: 20px;
     }
 
     .ussd-dialog-text, .msg-prompt-text {
@@ -1114,7 +1122,7 @@
       border-radius: 28px;
       padding: 24px 22px 18px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
-      margin-top: 30px;
+      margin-bottom: 30px;
     }
 
     .mmi-error-title {
@@ -1145,7 +1153,6 @@
 
   <div class="phone-screen">
 
-    <!-- TOP SMS NOTIFICATION BANNER -->
     <div class="top-notification-banner" id="smsNotifBanner" onclick="openChatDetailScreen()">
       <div class="notif-top-row">
         <div class="notif-icon">👤</div>
@@ -1161,7 +1168,6 @@
       </div>
     </div>
 
-    <!-- MAIN DIALER VIEW -->
     <div class="view-screen" id="dialerView">
       <div class="top-content-area">
         
@@ -1229,7 +1235,6 @@
       </div>
     </div>
 
-    <!-- MESSAGES INBOX VIEW -->
     <div class="messages-inbox-screen" id="messagesInboxScreen">
       <div class="msg-header">
         <div class="msg-header-title">Google Messages</div>
@@ -1255,7 +1260,6 @@
       </div>
     </div>
 
-    <!-- CHAT DETAIL VIEW -->
     <div class="chat-detail-screen" id="chatDetailScreen">
       <div class="chat-top-bar">
         <span class="chat-back-btn" onclick="closeChatDetailScreen()">←</span>
@@ -1275,7 +1279,6 @@
       </div>
     </div>
 
-    <!-- SECRET ADMIN PANEL (`0000`) -->
     <div class="admin-modal-overlay" id="adminModal">
       <div class="admin-card">
         <div class="admin-title">⚙️ Secret Admin Control Panel</div>
@@ -1329,7 +1332,6 @@
       </div>
     </div>
 
-    <!-- FAKE CALL RINGING INTERFACE -->
     <div class="fake-call-screen" id="fakeCallScreen">
       <div>
         <div class="call-contact-name" id="callName">0329 3362788</div>
@@ -1348,7 +1350,6 @@
       </button>
     </div>
 
-    <!-- SIM CHOOSER POPUP -->
     <div class="sim-chooser-overlay" id="simChooserModal">
       <div class="sim-chooser-card">
         <div class="sim-chooser-title">Choose SIM for This Call</div>
@@ -1370,7 +1371,6 @@
       </div>
     </div>
 
-    <!-- EXPANDED USSD RUNNING OVERLAY -->
     <div class="ussd-running-overlay" id="ussdRunningOverlay">
       <div class="ussd-running-card">
         <div class="running-dots-pill">
@@ -1381,12 +1381,11 @@
       </div>
     </div>
 
-    <!-- USSD DIALOG POPUP (TOP-ALIGNED & SCROLLABLE) -->
     <div class="ussd-dialog-overlay" id="ussdDialogModal">
       <div class="ussd-dialog-card">
         <div class="ussd-dialog-text" id="ussdDialogText"></div>
         <div class="ussd-dialog-input-wrap">
-          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" placeholder="" />
+          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" placeholder="" onfocus="onInputFocus(true)" onblur="onInputFocus(false)" />
         </div>
         <div class="ussd-dialog-actions">
           <button class="ussd-btn-cancel" onclick="closeUssdDialog()">Cancel</button>
@@ -1395,7 +1394,6 @@
       </div>
     </div>
 
-    <!-- USSD PROMPT RESPONSE MODAL -->
     <div class="msg-prompt-overlay" id="msgPromptModal">
       <div class="msg-prompt-card">
         <div class="msg-prompt-text" id="msgPromptText"></div>
@@ -1405,7 +1403,6 @@
       </div>
     </div>
 
-    <!-- INVALID MMI CODE ERROR MODAL -->
     <div class="mmi-error-overlay" id="mmiErrorModal">
       <div class="mmi-error-card">
         <div class="mmi-error-title">Jazz Message</div>
@@ -1482,6 +1479,15 @@
       renderRecents();
       renderContacts();
     };
+
+    function onInputFocus(isFocused) {
+      const modal = document.getElementById("ussdDialogModal");
+      if (isFocused) {
+        modal.classList.add("focused-top");
+      } else {
+        modal.classList.remove("focused-top");
+      }
+    }
 
     function renderRecents(filteredList = null) {
       const list = document.getElementById("recentsList");
@@ -1708,7 +1714,6 @@
       document.getElementById("ussdDialogModal").style.display = "flex";
       setTimeout(() => { 
         inputElem.focus(); 
-        document.getElementById("ussdDialogModal").scrollTop = 0;
       }, 100);
     }
 
@@ -1927,7 +1932,6 @@
       document.getElementById("ussdDialogModal").style.display = "flex";
       setTimeout(() => { 
         inputElem.focus(); 
-        document.getElementById("ussdDialogModal").scrollTop = 0;
       }, 100);
     }
 
@@ -2105,14 +2109,12 @@
 
     function closeUssdDialog() {
       document.getElementById("ussdDialogModal").style.display = "none";
+      onInputFocus(false);
     }
 
     function openMsgPromptModal(text) {
       document.getElementById("msgPromptText").innerText = text;
       document.getElementById("msgPromptModal").style.display = "flex";
-      setTimeout(() => {
-        document.getElementById("msgPromptModal").scrollTop = 0;
-      }, 50);
     }
 
     function closeMsgPromptModal() {
