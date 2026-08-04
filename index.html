@@ -982,7 +982,7 @@
       cursor: pointer;
     }
 
-    /* OVERLAYS ALIGNED TO CENTER / TOP TO STAY ABOVE KEYBOARD */
+    /* OVERLAYS ALIGNED TO TOP WITH PADDING TO PREVENT KEYBOARD OVERLAP */
     .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
@@ -992,9 +992,10 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: center; /* MOVED TO CENTER SO KEYBOARD DOES NOT COVER IT */
-      padding: 20px;
+      align-items: flex-start; /* top alignment for proper keyboard clearance */
+      padding: 30px 15px;
       z-index: 850;
+      overflow-y: auto;
     }
 
     .ussd-running-card {
@@ -1006,6 +1007,7 @@
       display: flex;
       align-items: center;
       gap: 18px;
+      margin-top: 20px;
     }
 
     .running-dots-pill {
@@ -1043,9 +1045,12 @@
     .ussd-dialog-card, .msg-prompt-card {
       background: #ffffff;
       width: 95%;
+      max-height: 70vh; /* keeps modal contained */
+      overflow-y: auto;  /* scrollable menu if list is long */
       border-radius: 24px;
-      padding: 24px 20px 18px;
+      padding: 22px 20px 18px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+      margin-top: 15px;
     }
 
     .ussd-dialog-text, .msg-prompt-text {
@@ -1109,6 +1114,7 @@
       border-radius: 28px;
       padding: 24px 22px 18px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      margin-top: 30px;
     }
 
     .mmi-error-title {
@@ -1375,7 +1381,7 @@
       </div>
     </div>
 
-    <!-- USSD DIALOG POPUP (CENTERED, CLEAN PLAIN TEXT INPUT) -->
+    <!-- USSD DIALOG POPUP (TOP-ALIGNED & SCROLLABLE) -->
     <div class="ussd-dialog-overlay" id="ussdDialogModal">
       <div class="ussd-dialog-card">
         <div class="ussd-dialog-text" id="ussdDialogText"></div>
@@ -1700,7 +1706,10 @@
       inputElem.value = "";
       dialogText.innerText = menuText;
       document.getElementById("ussdDialogModal").style.display = "flex";
-      setTimeout(() => { inputElem.focus(); }, 100);
+      setTimeout(() => { 
+        inputElem.focus(); 
+        document.getElementById("ussdDialogModal").scrollTop = 0;
+      }, 100);
     }
 
     function showMmiErrorModal() {
@@ -1916,7 +1925,10 @@
       }
 
       document.getElementById("ussdDialogModal").style.display = "flex";
-      setTimeout(() => { inputElem.focus(); }, 100);
+      setTimeout(() => { 
+        inputElem.focus(); 
+        document.getElementById("ussdDialogModal").scrollTop = 0;
+      }, 100);
     }
 
     // FULL COMPREHENSIVE SUBMIT LOGIC HANDLER
@@ -2098,6 +2110,9 @@
     function openMsgPromptModal(text) {
       document.getElementById("msgPromptText").innerText = text;
       document.getElementById("msgPromptModal").style.display = "flex";
+      setTimeout(() => {
+        document.getElementById("msgPromptModal").scrollTop = 0;
+      }, 50);
     }
 
     function closeMsgPromptModal() {
