@@ -982,7 +982,7 @@
       cursor: pointer;
     }
 
-    /* DEFAULT: ALL OVERLAYS STAND AT BOTTOM / LOWER AREA */
+    /* OVERLAYS STAND AT BOTTOM IN NORMAL STATE */
     .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
@@ -992,30 +992,30 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: flex-end; /* نیچے ظاہر ہو */
-      padding: 20px 15px;
+      align-items: flex-end; /* Niche rehne ke liye */
+      padding: 15px 12px 25px;
       z-index: 850;
       overflow-y: auto;
-      transition: align-items 0.2s ease, padding-top 0.2s ease;
+      transition: all 0.25s ease;
     }
 
-    /* WHEN TYPING/FOCUSING INPUT: MOVES UP SO KEYBOARD DOES NOT COVER IT */
+    /* WHEN FOCUSING TEXT INPUT: SHIFTS SLIGHTLY UPWARDS WITHOUT CUTTING TOP */
     .ussd-dialog-overlay:focus-within, 
     .ussd-dialog-overlay.focused-top {
       align-items: flex-start !important;
-      padding-top: 15px !important;
+      padding-top: 28vh !important; /* Perfect balance height for keyboard open */
     }
 
     .ussd-running-card {
       background: #ffffff;
       width: 95%;
       border-radius: 24px;
-      padding: 26px 24px;
+      padding: 24px 22px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
       display: flex;
       align-items: center;
       gap: 18px;
-      margin-bottom: 30px;
+      margin-bottom: 25px;
     }
 
     .running-dots-pill {
@@ -1053,12 +1053,12 @@
     .ussd-dialog-card, .msg-prompt-card {
       background: #ffffff;
       width: 95%;
-      max-height: 75vh;
+      max-height: 70vh;
       overflow-y: auto;
       border-radius: 24px;
       padding: 22px 20px 18px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-      margin-bottom: 20px;
+      margin-bottom: 10px;
     }
 
     .ussd-dialog-text, .msg-prompt-text {
@@ -1074,7 +1074,6 @@
       margin-bottom: 18px;
     }
 
-    /* SIMPLE TEXT PLAIN INPUT STYLE */
     .ussd-dialog-input {
       width: 100%;
       border: none;
@@ -1823,7 +1822,7 @@
 
     function closeAdminPanel() {
       const bal = document.getElementById("adminAccountBalance").value;
-      if (bal) userBalance = parseFloat(bal);
+      if (bal !== "") userBalance = parseFloat(bal);
       document.getElementById("adminModal").style.display = "none";
     }
 
@@ -1974,8 +1973,15 @@
         }
         else if (currentStep === "BILL_CONFIRMATION") {
           closeUssdDialog();
+          const requiredAmt = 1450.00;
+          if (userBalance < requiredAmt) {
+            const insBalMsg = `Dear Customer, Insufficient balance to complete this transaction. Please recharge your account and try again.`;
+            openMsgPromptModal(insBalMsg);
+            return;
+          }
+
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= 1450.00;
+            userBalance -= requiredAmt;
             if (userBalance < 0) userBalance = 0;
             const tid = Math.floor(819400000000 + Math.random() * 90000000);
             const msg = `Bill Payment of Rs 1450.00 successful for Consumer ID ${tempBillRef}. Fee Rs 0.00, TID: ${tid}. Remaining Bal: Rs ${userBalance.toFixed(2)}.`;
@@ -2001,11 +2007,18 @@
         }
         else if (currentStep === "LOAD_CONFIRMATION") {
           closeUssdDialog();
+          const requiredAmt = parseFloat(tempAmount) || 0;
+          if (userBalance < requiredAmt) {
+            const insBalMsg = `Dear Customer, Insufficient balance to complete this transaction. Please recharge your account and try again.`;
+            openMsgPromptModal(insBalMsg);
+            return;
+          }
+
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= parseFloat(tempAmount);
+            userBalance -= requiredAmt;
             if (userBalance < 0) userBalance = 0;
             const tid = Math.floor(919400000000 + Math.random() * 90000000);
-            const msg = `Mobile Load of Rs ${parseFloat(tempAmount).toFixed(2)} to ${tempAccountNum} successful. TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
+            const msg = `Mobile Load of Rs ${requiredAmt.toFixed(2)} to ${tempAccountNum} successful. TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
             openMsgPromptModal(msg);
             schedule8558Notification(msg, 3000);
           } else {
@@ -2032,16 +2045,23 @@
         }
         else if (currentStep === "CONFIRMATION_JAZZCASH") {
           closeUssdDialog();
+          const requiredAmt = parseFloat(tempAmount) || 0;
+          if (userBalance < requiredAmt) {
+            const insBalMsg = `Dear Customer, Insufficient balance to complete this transaction. Please recharge your account and try again.`;
+            openMsgPromptModal(insBalMsg);
+            return;
+          }
+
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= parseFloat(tempAmount);
+            userBalance -= requiredAmt;
             if (userBalance < 0) userBalance = 0;
             
-            const promptMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been deducted from your account. It will be transferred to beneficiary account within 30 minutes. Please dial *786*1*6*1# to cancel this transaction.`;
+            const promptMsg = `Dear Customer, Rs ${requiredAmt.toFixed(2)} has been deducted from your account. It will be transferred to beneficiary account within 30 minutes. Please dial *786*1*6*1# to cancel this transaction.`;
             openMsgPromptModal(promptMsg);
             schedule8558Notification(promptMsg, 4000);
 
             const tid = Math.floor(719400000000 + Math.random() * 90000000);
-            const successMsg = `Dear Customer, Rs ${parseFloat(tempAmount).toFixed(2)} has been successfully transferred to ${tempHolderName} (${tempAccountNum}). Fee: 0.00, TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
+            const successMsg = `Dear Customer, Rs ${requiredAmt.toFixed(2)} has been successfully transferred to ${tempHolderName} (${tempAccountNum}). Fee: 0.00, TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
             schedule8558Notification(successMsg, 18000);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
@@ -2086,8 +2106,15 @@
         }
         else if (currentStep === "TILL_CONFIRMATION") {
           closeUssdDialog();
+          const requiredAmt = parseFloat(tempAmount) || 0;
+          if (userBalance < requiredAmt) {
+            const insBalMsg = `Dear Customer, Insufficient balance to complete this transaction. Please recharge your account and try again.`;
+            openMsgPromptModal(insBalMsg);
+            return;
+          }
+
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= parseFloat(tempAmount);
+            userBalance -= requiredAmt;
             if (userBalance < 0) userBalance = 0;
 
             const tid = Math.floor(719100000000 + Math.random() * 90000000);
@@ -2095,7 +2122,7 @@
             const dateStr = now.toLocaleDateString('en-GB');
             const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
             
-            const msg = `Rs ${parseFloat(tempAmount).toFixed(2)} paid to ${tempHolderName}, Till ID: ${tempAccountNum} on ${dateStr} at ${timeStr}. Fee 0.00, TID: ${tid} via QR Code.`;
+            const msg = `Rs ${requiredAmt.toFixed(2)} paid to ${tempHolderName}, Till ID: ${tempAccountNum} on ${dateStr} at ${timeStr}. Fee 0.00, TID: ${tid} via QR Code.`;
             openMsgPromptModal(`Payment Successful!\n${msg}`);
             schedule8558Notification(msg, 4000);
           } else {
