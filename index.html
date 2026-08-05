@@ -1106,7 +1106,7 @@
     let pendingCallName = "";
     const REQUIRED_PIN = "0303";
 
-    // 1. PERMANENT BALANCE (LOCALSTORAGE LOAD)
+    // 1. PERMANENT BALANCE (LOCALSTORAGE)
     let storedBal = localStorage.getItem("permanentBalance");
     let userBalance = storedBal !== null ? parseFloat(storedBal) : 780.46;
 
@@ -1517,19 +1517,87 @@
       document.getElementById("adminModal").style.display = "none";
     }
 
+    // 2. MULTIPLE COMMANDS HANDLING (e.g. *786*1*1*03088085231*500#)
     function processMultiStringUSSD(cmds) {
+      // Direct Balance Check: *786*6*2#
       if (cmds[0] === "6") {
         if (cmds.length === 1) showStep("MY_ACCOUNT_MENU");
         else if (cmds[1] === "2") showStep("CHECK_BALANCE_PIN");
       }
+      // Money Transfer Commands: *786*1...
       else if (cmds[0] === "1") {
         if (cmds.length === 1) showStep("SEND_MONEY_MENU");
-        else if (cmds[1] === "1") {
+        else if (cmds[1] === "1") { // Mobile Account
           if (cmds.length === 2) showStep("ENTER_NUMBER");
-          else {
+          else if (cmds.length === 3) {
             tempAccountNum = cmds[2];
+            let matched = accountsDB.find(a => a.number === tempAccountNum);
+            if (!matched || tempAccountNum.length !== 11) {
+              const notFoundMsg = `Dear Customer, Transaction failed. Account (${tempAccountNum}) does not exist or is invalid.`;
+              openMsgPromptModal(notFoundMsg);
+              return;
+            }
+            tempHolderName = matched.name;
             showStep("ENTER_AMOUNT");
+          } else if (cmds.length >= 4) { // Direct All in One Command
+            tempAccountNum = cmds[2];
+            tempAmount = cmds[3];
+            let matched = accountsDB.find(a => a.number === tempAccountNum);
+            if (!matched || tempAccountNum.length !== 11) {
+              const notFoundMsg = `Dear Customer, Transaction failed. Account (${tempAccountNum}) does not exist or is invalid.`;
+              openMsgPromptModal(notFoundMsg);
+              return;
+            }
+            tempHolderName = matched.name;
+            showStep("CONFIRMATION_JAZZCASH");
           }
+        }
+        else if (cmds[1] === "4") { // Raast Transfer Direct
+          if (cmds.length === 2) showStep("RAAST_ENTER_NUMBER");
+          else if (cmds.length >= 4) {
+            tempAccountNum = cmds[2];
+            tempAmount = cmds[3];
+            let matched = accountsDB.find(a => a.number === tempAccountNum);
+            if (!matched || tempAccountNum.length !== 11) {
+              const notFoundMsg = `Dear Customer, Transaction failed. Raast ID (${tempAccountNum}) does not exist or is invalid.`;
+              openMsgPromptModal(notFoundMsg);
+              return;
+            }
+            tempHolderName = matched.name;
+            showStep("CONFIRMATION_JAZZCASH");
+          }
+        }
+      }
+      // Direct Raast Shortcut: *786*4...
+      else if (cmds[0] === "4") {
+        if (cmds.length === 1) showStep("RAAST_ENTER_NUMBER");
+        else if (cmds.length >= 3) {
+          tempAccountNum = cmds[1];
+          tempAmount = cmds[2];
+          let matched = accountsDB.find(a => a.number === tempAccountNum);
+          if (!matched || tempAccountNum.length !== 11) {
+            const notFoundMsg = `Dear Customer, Transaction failed. Raast ID (${tempAccountNum}) does not exist or is invalid.`;
+            openMsgPromptModal(notFoundMsg);
+            return;
+          }
+          tempHolderName = matched.name;
+          showStep("CONFIRMATION_JAZZCASH");
+        }
+      }
+      // Direct Till Payment Shortcut: *786*10...
+      else if (cmds[0] === "10") {
+        if (cmds.length === 1) showStep("ENTER_TILL_ID");
+        else if (cmds.length >= 3) {
+          tempAccountNum = cmds[1];
+          tempAmount = cmds[2];
+          let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
+          if (!matchedTill) {
+            const notFoundMsg = `Dear Customer, Invalid Till ID (${tempAccountNum}). Merchant account not found.`;
+            openMsgPromptModal(notFoundMsg);
+            return;
+          }
+          tempHolderName = matchedTill.name;
+          showStep("TILL_CONFIRMATION");
         }
       } else {
         showStep("MAIN_MENU");
@@ -1704,20 +1772,20 @@
         }
         else if (currentStep === "SEND_MONEY_MENU") {
           if (inputVal === "1") showStep("MOBILE_ACCOUNT_MENU");
-          else if (inputVal === "4") showStep("RAAST_ENTER_NUMBER"); // RAAST ID TRANSFER
+          else if (inputVal === "4") showStep("RAAST_ENTER_NUMBER");
           else showStep("MOBILE_ACCOUNT_MENU");
         }
         else if (currentStep === "MOBILE_ACCOUNT_MENU") {
           showStep("ENTER_NUMBER");
         }
-        // 2. ACCOUNT CHECK & NOT FOUND LOGIC
+        // 3. STRICT 11 DIGIT VALIDATION & NOT FOUND ERROR LOGIC
         else if (currentStep === "ENTER_NUMBER" || currentStep === "RAAST_ENTER_NUMBER") {
           tempAccountNum = inputVal;
           let matched = accountsDB.find(a => a.number === tempAccountNum);
           
-          if (!matched) {
+          if (!matched || tempAccountNum.length !== 11) {
             closeUssdDialog();
-            const notFoundMsg = `Dear Customer, Transaction failed. Account (${tempAccountNum}) does not exist or is not registered.`;
+            const notFoundMsg = `Dear Customer, Transaction failed. Account (${tempAccountNum}) does not exist or is invalid.`;
             openMsgPromptModal(notFoundMsg);
             return;
           }
