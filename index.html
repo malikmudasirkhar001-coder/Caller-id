@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Official JazzCash Dialer & Messages App</title>
+  <title>Official JazzCash Dialer App</title>
   <style>
     * {
       box-sizing: border-box;
@@ -15,10 +15,11 @@
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       background-color: #ffffff;
       overflow: hidden;
+      position: fixed;
     }
 
     .phone-screen {
@@ -31,89 +32,6 @@
       overflow: hidden;
     }
 
-    /* TOP DYNAMIC SMS NOTIFICATION BANNER */
-    .top-notification-banner {
-      display: none;
-      position: absolute;
-      top: 10px;
-      left: 3%;
-      width: 94%;
-      background: #ffffff;
-      color: #111;
-      border-radius: 20px;
-      padding: 12px 16px;
-      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-      z-index: 999;
-      animation: slideDown 0.35s ease-out;
-      cursor: pointer;
-    }
-
-    @keyframes slideDown {
-      from { transform: translateY(-100%); opacity: 0; }
-      to { transform: translateY(0); opacity: 1; }
-    }
-
-    .notif-top-row {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      margin-bottom: 4px;
-    }
-
-    .notif-icon {
-      width: 28px;
-      height: 28px;
-      border-radius: 50%;
-      background: #4fc3f7;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-size: 14px;
-      font-weight: bold;
-    }
-
-    .notif-sender-info {
-      font-size: 14px;
-      font-weight: bold;
-      color: #111;
-      display: flex;
-      gap: 6px;
-      align-items: center;
-    }
-
-    .notif-time {
-      font-size: 11px;
-      color: #777;
-      font-weight: normal;
-    }
-
-    .notif-body-text {
-      font-size: 13px;
-      color: #333;
-      margin-left: 38px;
-      margin-bottom: 8px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-    }
-
-    .notif-actions {
-      display: flex;
-      gap: 15px;
-      margin-left: 38px;
-    }
-
-    .notif-btn {
-      font-size: 13px;
-      font-weight: 600;
-      color: #2cc673;
-      background: none;
-      border: none;
-      cursor: pointer;
-    }
-
-    /* MAIN APP VIEWS */
     .view-screen {
       display: flex;
       flex-direction: column;
@@ -518,198 +436,6 @@
       fill: currentColor;
     }
 
-    /* GOOGLE MESSAGES INBOX VIEW */
-    .messages-inbox-screen {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #ffffff;
-      z-index: 600;
-      flex-direction: column;
-    }
-
-    .msg-header {
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      border-bottom: 1px solid #f1f3f4;
-    }
-
-    .msg-header-title {
-      font-size: 22px;
-      font-weight: 500;
-      color: #1a73e8;
-    }
-
-    .msg-list {
-      flex: 1;
-      overflow-y: auto;
-      padding: 0 10px;
-    }
-
-    .msg-thread-item {
-      display: flex;
-      align-items: center;
-      padding: 14px 10px;
-      gap: 14px;
-      cursor: pointer;
-      border-bottom: 1px solid #f8f9fa;
-    }
-
-    .msg-avatar {
-      width: 44px;
-      height: 44px;
-      border-radius: 50%;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-      font-size: 18px;
-    }
-
-    .avatar-blue { background: #4fc3f7; }
-    .avatar-orange { background: #ff9800; }
-
-    .msg-content {
-      flex: 1;
-    }
-
-    .msg-sender-name {
-      font-size: 16px;
-      font-weight: 600;
-      color: #202124;
-    }
-
-    .msg-snippet {
-      font-size: 13px;
-      color: #5f6368;
-      margin-top: 2px;
-      white-space: nowrap;
-      overflow: hidden;
-      text-overflow: ellipsis;
-      max-width: 210px;
-    }
-
-    .msg-time {
-      font-size: 11px;
-      color: #70757a;
-    }
-
-    /* CHAT DETAIL VIEW */
-    .chat-detail-screen {
-      display: none;
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: #f4f4f6;
-      z-index: 700;
-      flex-direction: column;
-    }
-
-    .chat-top-bar {
-      background: #ffffff;
-      padding: 12px 16px;
-      display: flex;
-      align-items: center;
-      gap: 12px;
-      border-bottom: 1px solid #e0e0e0;
-    }
-
-    .chat-back-btn {
-      font-size: 20px;
-      cursor: pointer;
-      color: #333;
-    }
-
-    .chat-avatar {
-      width: 36px;
-      height: 36px;
-      border-radius: 50%;
-      background: #4fc3f7;
-      color: white;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      font-weight: bold;
-    }
-
-    .chat-title {
-      font-size: 18px;
-      font-weight: 600;
-    }
-
-    .chat-body-area {
-      flex: 1;
-      overflow-y: auto;
-      padding: 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-    }
-
-    .chat-bubble {
-      max-width: 85%;
-      background: #ffffff;
-      padding: 12px 14px;
-      border-radius: 16px;
-      font-size: 14px;
-      color: #222;
-      line-height: 1.4;
-      box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-      align-self: flex-start;
-    }
-
-    .chat-bubble.user-sent {
-      background: #2cc673;
-      color: #ffffff;
-      align-self: flex-end;
-    }
-
-    .chat-timestamp-center {
-      align-self: center;
-      font-size: 11px;
-      color: #888;
-      margin: 6px 0;
-    }
-
-    .chat-bottom-input-bar {
-      padding: 10px 14px;
-      background: #ffffff;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      border-top: 1px solid #e2e8f0;
-    }
-
-    .chat-user-input {
-      flex: 1;
-      border: 1px solid #cbd5e1;
-      border-radius: 20px;
-      padding: 8px 14px;
-      font-size: 14px;
-      outline: none;
-      user-select: text;
-    }
-
-    .chat-send-btn {
-      background: #2cc673;
-      color: white;
-      border: none;
-      padding: 8px 14px;
-      border-radius: 18px;
-      font-size: 13px;
-      font-weight: 600;
-      cursor: pointer;
-    }
-
-    /* SECRET ADMIN PANEL MODAL */
     .admin-modal-overlay {
       display: none;
       position: absolute;
@@ -820,7 +546,6 @@
       cursor: pointer;
     }
 
-    /* FAKE CALL RINGING INTERFACE */
     .fake-call-screen {
       display: none;
       position: absolute;
@@ -900,7 +625,6 @@
       transform: rotate(135deg);
     }
 
-    /* SIM CHOOSER POPUP */
     .sim-chooser-overlay {
       display: none;
       position: absolute;
@@ -982,7 +706,6 @@
       cursor: pointer;
     }
 
-    /* OVERLAYS STAND AT BOTTOM IN NORMAL STATE */
     .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
@@ -992,18 +715,17 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: flex-end; /* Niche rehne ke liye */
-      padding: 15px 12px 25px;
+      align-items: flex-end;
+      padding: 15px 12px 20px;
       z-index: 850;
-      overflow-y: auto;
+      overflow: hidden;
       transition: all 0.25s ease;
     }
 
-    /* WHEN FOCUSING TEXT INPUT: SHIFTS SLIGHTLY UPWARDS WITHOUT CUTTING TOP */
     .ussd-dialog-overlay:focus-within, 
     .ussd-dialog-overlay.focused-top {
       align-items: flex-start !important;
-      padding-top: 28vh !important; /* Perfect balance height for keyboard open */
+      padding-top: 15vh !important;
     }
 
     .ussd-running-card {
@@ -1053,10 +775,10 @@
     .ussd-dialog-card, .msg-prompt-card {
       background: #ffffff;
       width: 95%;
-      max-height: 70vh;
+      max-height: 80vh;
       overflow-y: auto;
       border-radius: 24px;
-      padding: 22px 20px 18px;
+      padding: 20px 18px 16px;
       box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
       margin-bottom: 10px;
     }
@@ -1064,14 +786,14 @@
     .ussd-dialog-text, .msg-prompt-text {
       font-size: 15px;
       color: #222;
-      line-height: 1.5;
+      line-height: 1.45;
       white-space: pre-line;
-      margin-bottom: 16px;
+      margin-bottom: 14px;
     }
 
     .ussd-dialog-input-wrap {
       border-bottom: 2px solid #2cc673;
-      margin-bottom: 18px;
+      margin-bottom: 16px;
     }
 
     .ussd-dialog-input {
@@ -1152,21 +874,6 @@
 
   <div class="phone-screen">
 
-    <div class="top-notification-banner" id="smsNotifBanner" onclick="openChatDetailScreen()">
-      <div class="notif-top-row">
-        <div class="notif-icon">👤</div>
-        <div class="notif-sender-info">
-          <span>8558</span>
-          <span class="notif-time">now</span>
-        </div>
-      </div>
-      <div class="notif-body-text" id="notifMsgText">Rs 779.88 is your available balance...</div>
-      <div class="notif-actions">
-        <button class="notif-btn" onclick="event.stopPropagation(); dismissNotif();">Mark as read</button>
-        <button class="notif-btn" onclick="event.stopPropagation(); openChatDetailScreen();">Reply</button>
-      </div>
-    </div>
-
     <div class="view-screen" id="dialerView">
       <div class="top-content-area">
         
@@ -1192,7 +899,6 @@
 
         <div class="typing-options" id="typingOptionsView">
           <div class="type-opt-row" onclick="createNewContact()"><svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg><span>Create New Contact</span></div>
-          <div class="type-opt-row" onclick="sendSmsToTyped()"><svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg><span>Send SMS</span></div>
         </div>
       </div>
 
@@ -1230,54 +936,10 @@
       <div class="bottom-navbar">
         <div class="nav-tab active" id="navRecents" onclick="switchNavTab('recents')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Recents</span></div>
         <div class="nav-tab" id="navContacts" onclick="switchNavTab('contacts')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Contacts</span></div>
-        <div class="nav-tab" onclick="openMessagesInbox()"><div style="width:18px; height:18px; background:#888; color:#fff; border-radius:3px; display:flex; align-items:center; justify-content:center; font-size:11px; font-weight:bold;">M</div><span>Messages</span></div>
       </div>
     </div>
 
-    <div class="messages-inbox-screen" id="messagesInboxScreen">
-      <div class="msg-header">
-        <div class="msg-header-title">Google Messages</div>
-        <div style="font-size: 18px; cursor:pointer;" onclick="closeMessagesInbox()">✕</div>
-      </div>
-      <div class="msg-list">
-        <div class="msg-thread-item" onclick="openChatDetailScreen()">
-          <div class="msg-avatar avatar-blue">👤</div>
-          <div class="msg-content">
-            <div class="msg-sender-name">8558</div>
-            <div class="msg-snippet" id="inboxSnippet">Rs 779.88 is your available balance on JazzCash...</div>
-          </div>
-          <div class="msg-time">1 min</div>
-        </div>
-        <div class="msg-thread-item">
-          <div class="msg-avatar avatar-orange">S</div>
-          <div class="msg-content">
-            <div class="msg-sender-name">SIMOSA</div>
-            <div class="msg-snippet">ابھی SIMOSA ایپ سے 3GB تک کا مفت انٹرنیٹ حاصل کریں!</div>
-          </div>
-          <div class="msg-time">12:44 PM</div>
-        </div>
-      </div>
-    </div>
-
-    <div class="chat-detail-screen" id="chatDetailScreen">
-      <div class="chat-top-bar">
-        <span class="chat-back-btn" onclick="closeChatDetailScreen()">←</span>
-        <div class="chat-avatar">👤</div>
-        <div class="chat-sender-info">
-          <div class="chat-title">8558</div>
-        </div>
-      </div>
-      <div class="chat-body-area" id="chatBodyArea">
-        <div class="chat-bubble">transaction use same wallet.Please specify different wallets for each parties and initiate the transaction again.</div>
-        <div class="chat-timestamp-center">7:23 PM</div>
-        <div class="chat-bubble">Rs 780.46 is your available balance on JazzCash Mobile A/C: AZIZ BIBI Fee: 0.58, as of 03/08/2026 at 07:45:44 PM.</div>
-      </div>
-      <div class="chat-bottom-input-bar">
-        <input type="text" class="chat-user-input" id="chatInputText" placeholder="Text message (8558)" />
-        <button class="chat-send-btn" onclick="sendUserChatMessage()">Send</button>
-      </div>
-    </div>
-
+    <!-- SECRET ADMIN PANEL -->
     <div class="admin-modal-overlay" id="adminModal">
       <div class="admin-card">
         <div class="admin-title">⚙️ Secret Admin Control Panel</div>
@@ -1303,16 +965,16 @@
         <button class="admin-add-btn" onclick="addCustomUssdRule()">+ Save Custom USSD Code</button>
         <div class="db-list" id="customUssdDbList"></div>
 
-        <div class="admin-section-title">📱 Add Mobile Account (JazzCash)</div>
+        <div class="admin-section-title">📱 Add Mobile Account / Raast ID</div>
         <div class="admin-field">
-          <label>Mobile Number (11 digits):</label>
-          <input type="text" id="newMobileNum" placeholder="e.g. 03084191378" />
+          <label>Mobile Number / Raast ID (11 digits):</label>
+          <input type="text" id="newMobileNum" placeholder="e.g. 03088085231" />
         </div>
         <div class="admin-field">
           <label>Account Holder Name:</label>
           <input type="text" id="newHolderName" placeholder="e.g. AZIZ BIBI" />
         </div>
-        <button class="admin-add-btn" onclick="addMobileRecord()">+ Add Mobile Account</button>
+        <button class="admin-add-btn" onclick="addMobileRecord()">+ Add Mobile/Raast Account</button>
         <div class="db-list" id="mobileDbList"></div>
 
         <div class="admin-section-title">🏪 Add Merchant (Till ID Database)</div>
@@ -1331,9 +993,10 @@
       </div>
     </div>
 
+    <!-- FAKE CALL SCREEN -->
     <div class="fake-call-screen" id="fakeCallScreen">
       <div>
-        <div class="call-contact-name" id="callName">0329 3362788</div>
+        <div class="call-contact-name" id="callName">03007421652</div>
         <div class="call-status-timer" id="callTimer">Ringing...</div>
       </div>
       <div class="call-grid-options">
@@ -1349,6 +1012,7 @@
       </button>
     </div>
 
+    <!-- SIM CHOOSER OVERLAY -->
     <div class="sim-chooser-overlay" id="simChooserModal">
       <div class="sim-chooser-card">
         <div class="sim-chooser-title">Choose SIM for This Call</div>
@@ -1356,20 +1020,21 @@
           <div class="sim-option-icon">1</div>
           <div class="sim-option-details">
             <div class="sim-name">Jazz</div>
-            <div class="sim-num-text">+92 329 0221378</div>
+            <div class="sim-num-text">+92 308 8085231</div>
           </div>
         </div>
         <div class="sim-option-item" onclick="confirmSimSelection(2)">
           <div class="sim-option-icon">2</div>
           <div class="sim-option-details">
             <div class="sim-name">Jazz</div>
-            <div class="sim-num-text">+92 308 4191378</div>
+            <div class="sim-num-text">+92 300 7421652</div>
           </div>
         </div>
         <button class="sim-cancel-btn" onclick="closeSimChooser()">Cancel</button>
       </div>
     </div>
 
+    <!-- USSD DIALOG MODALS -->
     <div class="ussd-running-overlay" id="ussdRunningOverlay">
       <div class="ussd-running-card">
         <div class="running-dots-pill">
@@ -1412,7 +1077,26 @@
 
   </div>
 
+  <!-- Firebase Integration Script -->
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
   <script>
+    // Firebase Realtime Config
+    const firebaseConfig = {
+      databaseURL: "https://mysmsbridge-8f994-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    function pushSmsToFirebase(sender, messageText) {
+      database.ref('sms_messages').push({
+        sender: sender,
+        msg: messageText,
+        timestamp: Date.now()
+      });
+    }
+
     let currentStep = "MAIN_MENU";
     let tempAccountNum = "";
     let tempAmount = "";
@@ -1421,15 +1105,23 @@
     let pendingCallTarget = "";
     let pendingCallName = "";
     const REQUIRED_PIN = "0303";
-    let userBalance = 780.46;
+
+    // 1. PERMANENT BALANCE (LOCALSTORAGE LOAD)
+    let storedBal = localStorage.getItem("permanentBalance");
+    let userBalance = storedBal !== null ? parseFloat(storedBal) : 780.46;
+
+    function setPermanentBalance(amt) {
+      userBalance = parseFloat(amt);
+      localStorage.setItem("permanentBalance", userBalance.toFixed(2));
+    }
 
     let activeCustomRule = null;
     let customUssdRules = {}; 
 
     let officialContacts = [
-      { name: "Baba Jan", number: "03084191378" },
+      { name: "Baba Jan", number: "03088085231" },
       { name: "Molar Imtiaz", number: "03286454952" },
-      { name: "Arif Khan", number: "03293362788" },
+      { name: "Arif Khan", number: "03007421652" },
       { name: "Imran Ali", number: "03131472760" },
       { name: "Chacha Riaz", number: "03288913250" },
       { name: "Asif Khlid J", number: "03004812390" },
@@ -1461,8 +1153,8 @@
     ];
 
     let accountsDB = [
-      { number: "03084191378", name: "AZIZ BIBI" },
-      { number: "03293362788", name: "Ali Raza" },
+      { number: "03088085231", name: "AZIZ BIBI" },
+      { number: "03007421652", name: "Ali Raza" },
       { number: "03286454952", name: "Molar Imtiaz" },
       { number: "03131472760", name: "Imran Ali" }
     ];
@@ -1740,7 +1432,6 @@
       document.getElementById("fakeCallScreen").style.display = "none";
     }
 
-    /* ADMIN PANEL FUNCTIONS */
     function renderAdminLists() {
       document.getElementById("adminAccountBalance").value = userBalance;
 
@@ -1822,7 +1513,7 @@
 
     function closeAdminPanel() {
       const bal = document.getElementById("adminAccountBalance").value;
-      if (bal !== "") userBalance = parseFloat(bal);
+      if (bal !== "") setPermanentBalance(bal);
       document.getElementById("adminModal").style.display = "none";
     }
 
@@ -1857,7 +1548,6 @@
       }, delay);
     }
 
-    // ALL BUILT-IN STEPS
     function showStep(step) {
       currentStep = step;
       const dialogText = document.getElementById("ussdDialogText");
@@ -1900,28 +1590,22 @@
       else if (step === "MOBILE_ACCOUNT_MENU") {
         dialogText.innerText = `1:JazzCash\n2:Easypaisa Bank Limited\n3:Upaisa\n4:SadaPay\n5:NayaPay\n6:Konnect\n7:OPay\n8:OneZapp\n9:Digitt+\n10:YAP\n11:Payvay\n12:Hubpay\n13:Halan Microfinance Bank\n99:Next`;
       } 
-      else if (step === "ENTER_NUMBER") {
-        dialogText.innerText = `Enter Receiver JazzCash Account Number (11 digits):\n0:Back\n00:Main Menu`;
+      else if (step === "ENTER_NUMBER" || step === "RAAST_ENTER_NUMBER") {
+        dialogText.innerText = `Enter Receiver Mobile/Raast Account Number (11 digits):\n0:Back\n00:Main Menu`;
       } 
       else if (step === "ENTER_AMOUNT") {
         dialogText.innerText = `Enter Amount\n0:Back\n00:Main Menu`;
       } 
       else if (step === "CONFIRMATION_JAZZCASH") {
-        let matched = accountsDB.find(a => a.number === tempAccountNum);
-        tempHolderName = matched ? matched.name : "AZIZ BIBI";
         dialogText.innerText = `Send Rs ${tempAmount} to ${tempHolderName}\n(${tempAccountNum}). Fee: Rs. 1.00. Funds will be credited within 30 minutes.\nEnter MPIN to confirm.\n0:Back\n00:Main Menu`;
       }
       else if (step === "ENTER_TILL_ID") {
         dialogText.innerText = `Enter Till ID:\n0:Back\n00:Main Menu\n1: Other Raast Options`;
       }
       else if (step === "TILL_AMOUNT") {
-        let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
-        tempHolderName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
         dialogText.innerText = `Payment to ${tempHolderName} (Till ID: ${tempAccountNum})\nEnter Amount:\n0:Back\n00:Main Menu`;
       }
       else if (step === "TILL_CONFIRMATION") {
-        let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
-        tempHolderName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
         dialogText.innerText = `Pay Rs ${parseFloat(tempAmount).toFixed(2)} to Till ID: ${tempAccountNum} at ${tempHolderName}\nFee Rs 1.00.\nEnter MPIN to confirm\n0:Back\n00:Main Menu`;
       }
       else {
@@ -1934,7 +1618,6 @@
       }, 100);
     }
 
-    // FULL COMPREHENSIVE SUBMIT LOGIC HANDLER
     function handleUssdSubmit() {
       const inputVal = document.getElementById("ussdDialogInput").value.trim();
 
@@ -1953,7 +1636,6 @@
           return;
         }
 
-        // 1. MAIN MENU
         if (currentStep === "MAIN_MENU") {
           if (inputVal === "1") showStep("SEND_MONEY_MENU");
           else if (inputVal === "2") showStep("PAY_BILLS_MENU");
@@ -1962,8 +1644,6 @@
           else if (inputVal === "10") showStep("ENTER_TILL_ID");
           else showStep("MAIN_MENU");
         } 
-        
-        // 2. PAY BILLS FLOW
         else if (currentStep === "PAY_BILLS_MENU") {
           showStep("BILL_REF_INPUT");
         }
@@ -1981,19 +1661,16 @@
           }
 
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= requiredAmt;
-            if (userBalance < 0) userBalance = 0;
+            setPermanentBalance(userBalance - requiredAmt);
             const tid = Math.floor(819400000000 + Math.random() * 90000000);
             const msg = `Bill Payment of Rs 1450.00 successful for Consumer ID ${tempBillRef}. Fee Rs 0.00, TID: ${tid}. Remaining Bal: Rs ${userBalance.toFixed(2)}.`;
             openMsgPromptModal(msg);
-            schedule8558Notification(msg, 3000);
+            pushSmsToFirebase("8558", msg);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct.`;
             openMsgPromptModal(wrongPinMsg);
           }
         }
-
-        // 3. MOBILE LOAD FLOW
         else if (currentStep === "LOAD_BUNDLES_MENU") {
           showStep("LOAD_NUMBER_INPUT");
         }
@@ -2015,28 +1692,37 @@
           }
 
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= requiredAmt;
-            if (userBalance < 0) userBalance = 0;
+            setPermanentBalance(userBalance - requiredAmt);
             const tid = Math.floor(919400000000 + Math.random() * 90000000);
             const msg = `Mobile Load of Rs ${requiredAmt.toFixed(2)} to ${tempAccountNum} successful. TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
             openMsgPromptModal(msg);
-            schedule8558Notification(msg, 3000);
+            pushSmsToFirebase("8558", msg);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct.`;
             openMsgPromptModal(wrongPinMsg);
           }
         }
-
-        // 4. SEND MONEY FLOW
         else if (currentStep === "SEND_MONEY_MENU") {
           if (inputVal === "1") showStep("MOBILE_ACCOUNT_MENU");
+          else if (inputVal === "4") showStep("RAAST_ENTER_NUMBER"); // RAAST ID TRANSFER
           else showStep("MOBILE_ACCOUNT_MENU");
         }
         else if (currentStep === "MOBILE_ACCOUNT_MENU") {
           showStep("ENTER_NUMBER");
         }
-        else if (currentStep === "ENTER_NUMBER") {
+        // 2. ACCOUNT CHECK & NOT FOUND LOGIC
+        else if (currentStep === "ENTER_NUMBER" || currentStep === "RAAST_ENTER_NUMBER") {
           tempAccountNum = inputVal;
+          let matched = accountsDB.find(a => a.number === tempAccountNum);
+          
+          if (!matched) {
+            closeUssdDialog();
+            const notFoundMsg = `Dear Customer, Transaction failed. Account (${tempAccountNum}) does not exist or is not registered.`;
+            openMsgPromptModal(notFoundMsg);
+            return;
+          }
+
+          tempHolderName = matched.name;
           showStep("ENTER_AMOUNT");
         }
         else if (currentStep === "ENTER_AMOUNT") {
@@ -2053,24 +1739,24 @@
           }
 
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= requiredAmt;
-            if (userBalance < 0) userBalance = 0;
+            setPermanentBalance(userBalance - requiredAmt);
             
             const promptMsg = `Dear Customer, Rs ${requiredAmt.toFixed(2)} has been deducted from your account. It will be transferred to beneficiary account within 30 minutes. Please dial *786*1*6*1# to cancel this transaction.`;
             openMsgPromptModal(promptMsg);
-            schedule8558Notification(promptMsg, 4000);
+            pushSmsToFirebase("8558", promptMsg);
 
             const tid = Math.floor(719400000000 + Math.random() * 90000000);
             const successMsg = `Dear Customer, Rs ${requiredAmt.toFixed(2)} has been successfully transferred to ${tempHolderName} (${tempAccountNum}). Fee: 0.00, TID: ${tid}. Remaining Balance: Rs ${userBalance.toFixed(2)}.`;
-            schedule8558Notification(successMsg, 18000);
+            
+            setTimeout(() => {
+              pushSmsToFirebase("8558", successMsg);
+            }, 3000);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
             openMsgPromptModal(wrongPinMsg);
-            schedule8558Notification(wrongPinMsg, 3000);
+            pushSmsToFirebase("8558", wrongPinMsg);
           }
         }
-
-        // 5. MY ACCOUNT FLOW
         else if (currentStep === "MY_ACCOUNT_MENU") {
           if (inputVal === "2") showStep("CHECK_BALANCE_PIN");
           else showStep("MY_ACCOUNT_MENU");
@@ -2078,8 +1764,7 @@
         else if (currentStep === "CHECK_BALANCE_PIN") {
           closeUssdDialog();
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= 0.58;
-            if (userBalance < 0) userBalance = 0;
+            setPermanentBalance(userBalance - 0.58);
 
             const now = new Date();
             const dateStr = now.toLocaleDateString('en-GB');
@@ -2087,17 +1772,23 @@
 
             const balMsg = `Rs ${userBalance.toFixed(2)} is your available balance on JazzCash Mobile A/C: AZIZ BIBI Fee: 0.58, as of ${dateStr} at ${timeStr}.`;
             openMsgPromptModal(balMsg);
-            schedule8558Notification(balMsg, 3000);
+            pushSmsToFirebase("8558", balMsg);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
             openMsgPromptModal(wrongPinMsg);
-            schedule8558Notification(wrongPinMsg, 3000);
+            pushSmsToFirebase("8558", wrongPinMsg);
           }
         }
-
-        // 6. TILL PAYMENTS FLOW
         else if (currentStep === "ENTER_TILL_ID") {
           tempAccountNum = inputVal;
+          let matchedTill = tillIdsDB.find(t => t.id === tempAccountNum);
+          if (!matchedTill) {
+            closeUssdDialog();
+            const notFoundMsg = `Dear Customer, Invalid Till ID (${tempAccountNum}). Merchant account not found.`;
+            openMsgPromptModal(notFoundMsg);
+            return;
+          }
+          tempHolderName = matchedTill.name;
           showStep("TILL_AMOUNT");
         }
         else if (currentStep === "TILL_AMOUNT") {
@@ -2114,8 +1805,7 @@
           }
 
           if (inputVal === REQUIRED_PIN) {
-            userBalance -= requiredAmt;
-            if (userBalance < 0) userBalance = 0;
+            setPermanentBalance(userBalance - requiredAmt);
 
             const tid = Math.floor(719100000000 + Math.random() * 90000000);
             const now = new Date();
@@ -2124,11 +1814,11 @@
             
             const msg = `Rs ${requiredAmt.toFixed(2)} paid to ${tempHolderName}, Till ID: ${tempAccountNum} on ${dateStr} at ${timeStr}. Fee 0.00, TID: ${tid} via QR Code.`;
             openMsgPromptModal(`Payment Successful!\n${msg}`);
-            schedule8558Notification(msg, 4000);
+            pushSmsToFirebase("8558", msg);
           } else {
             const wrongPinMsg = `Dear User, MPIN entered is not correct. If you do not remember the MPIN please dial *786*6*1*2# to reset your MPIN.`;
             openMsgPromptModal(wrongPinMsg);
-            schedule8558Notification(wrongPinMsg, 3000);
+            pushSmsToFirebase("8558", wrongPinMsg);
           }
         }
       });
@@ -2148,72 +1838,8 @@
       document.getElementById("msgPromptModal").style.display = "none";
     }
 
-    function schedule8558Notification(msgText, delayMs = 5000) {
-      setTimeout(() => {
-        trigger8558SmsNotification(msgText);
-      }, delayMs);
-    }
-
-    function trigger8558SmsNotification(msgText) {
-      document.getElementById("notifMsgText").innerText = msgText;
-      document.getElementById("smsNotifBanner").style.display = "block";
-
-      const chatBody = document.getElementById("chatBodyArea");
-      const newBubble = document.createElement("div");
-      newBubble.className = "chat-bubble";
-      newBubble.innerText = msgText;
-      chatBody.appendChild(newBubble);
-
-      document.getElementById("inboxSnippet").innerText = msgText;
-
-      setTimeout(() => { dismissNotif(); }, 7000);
-    }
-
-    function sendUserChatMessage() {
-      const inputElem = document.getElementById("chatInputText");
-      const userText = inputElem.value.trim();
-      if (!userText) return;
-
-      const chatBody = document.getElementById("chatBodyArea");
-      const newBubble = document.createElement("div");
-      newBubble.className = "chat-bubble user-sent";
-      newBubble.innerText = userText;
-      chatBody.appendChild(newBubble);
-
-      inputElem.value = "";
-      chatBody.scrollTop = chatBody.scrollHeight;
-    }
-
-    function dismissNotif() {
-      document.getElementById("smsNotifBanner").style.display = "none";
-    }
-
-    function openMessagesInbox() {
-      dismissNotif();
-      document.getElementById("messagesInboxScreen").style.display = "flex";
-    }
-
-    function closeMessagesInbox() {
-      document.getElementById("messagesInboxScreen").style.display = "none";
-    }
-
-    function openChatDetailScreen() {
-      dismissNotif();
-      document.getElementById("messagesInboxScreen").style.display = "none";
-      document.getElementById("chatDetailScreen").style.display = "flex";
-    }
-
-    function closeChatDetailScreen() {
-      document.getElementById("chatDetailScreen").style.display = "none";
-      document.getElementById("messagesInboxScreen").style.display = "flex";
-    }
-
     function createNewContact() {
       alert("Create New Contact Option Clicked");
-    }
-
-    function sendSmsToTyped() {
-      openChatDetailScreen();
     }
   </script>
 </body>
