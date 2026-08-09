@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="ur">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Backend Admin Control Panel</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: sans-serif; }
+    body { background: #f4f6f9; padding: 20px; }
+    .admin-card { background: white; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.1); }
+    h2 { color: #2cc673; margin-bottom: 15px; text-align: center; }
+    .field { margin-bottom: 12px; }
+    label { font-size: 13px; color: #555; display: block; margin-bottom: 4px; }
+    input, textarea { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 6px; font-size: 14px; }
+    button { width: 100%; background: #2cc673; color: white; border: none; padding: 10px; border-radius: 6px; font-weight: bold; cursor: pointer; margin-top: 5px; }
+    .logs { margin-top: 20px; background: #eee; padding: 10px; border-radius: 6px; max-height: 200px; overflow-y: auto; font-size: 12px; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-card">
+    <h2>⚙️ Backend Control Panel</h2>
+
+    <div class="field">
+      <label>Wallet Balance (Rs):</label>
+      <input type="number" id="balanceInput" placeholder="780.46" />
+      <button onclick="updateBalance()">Update Balance Live</button>
+    </div>
+
+    <hr style="margin: 20px 0;">
+
+    <h3>📊 Transaction Logs (Firebase)</h3>
+    <div class="logs" id="logsContainer">Loading logs...</div>
+  </div>
+
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      databaseURL: "https://mysmsbridge-8f994-default-rtdb.firebaseio.com/"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+
+    // Load Balance
+    database.ref('app_config/balance').on('value', snapshot => {
+      if(snapshot.exists()) {
+        document.getElementById("balanceInput").value = snapshot.val();
+      }
+    });
+
+    function updateBalance() {
+      let newBal = parseFloat(document.getElementById("balanceInput").value);
+      database.ref('app_config/balance').set(newBal).then(() => {
+        alert("Balance successfully updated in Database!");
+      });
+    }
+
+    // Live Logs Listener
+    database.ref('sms_messages').on('value', snapshot => {
+      let logsContainer = document.getElementById("logsContainer");
+      logsContainer.innerHTML = "";
+      if(snapshot.exists()) {
+        let data = snapshot.val();
+        for(let key in data) {
+          let item = data[key];
+          logsContainer.innerHTML += `<div><b>${new Date(item.timestamp).toLocaleTimeString()}</b> - ${item.msg}</div><hr>`;
+        }
+      } else {
+        logsContainer.innerText = "No logs found.";
+      }
+    });
+  </script>
+</body>
+</html>
