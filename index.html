@@ -215,12 +215,11 @@
       color: #333;
     }
 
-    /* Unsaved Dynamic Options Menu Screen */
     .typing-options {
       display: none;
       flex-direction: column;
       padding: 20px 20px;
-      gap: 22px;
+      gap: 20px;
       background: #ffffff;
     }
 
@@ -254,7 +253,7 @@
     .dots-menu-btn {
       font-size: 22px;
       color: #333;
-      cursor: pointer;
+      cursor: default;
     }
 
     .number-display-input {
@@ -550,8 +549,8 @@
       cursor: pointer;
     }
 
-    /* MODAL PROMPTS */
-    .msg-prompt-overlay, .mmi-error-overlay {
+    /* USSD & PROMPT OVERLAYS */
+    .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
       top: 0;
@@ -560,38 +559,120 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.45);
       justify-content: center;
-      align-items: center;
-      padding: 15px;
+      align-items: flex-end;
+      padding: 15px 12px 20px;
       z-index: 850;
       overflow: hidden;
+      transition: all 0.25s ease;
     }
 
-    .msg-prompt-card, .mmi-error-card {
+    .ussd-running-card {
       background: #ffffff;
-      width: 90%;
-      border-radius: 20px;
-      padding: 20px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
-      text-align: center;
+      width: 95%;
+      border-radius: 24px;
+      padding: 24px 22px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.3);
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      margin-bottom: 25px;
     }
 
-    .msg-prompt-text {
+    .running-dots-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      background: #e2e8f0;
+      padding: 8px 14px;
+      border-radius: 16px;
+    }
+
+    .running-dot {
+      width: 8px;
+      height: 8px;
+      background-color: #64748b;
+      border-radius: 50%;
+      animation: runningPulse 1s infinite ease-in-out;
+    }
+
+    .running-dot:nth-child(2) {
+      animation-delay: 0.2s;
+    }
+
+    @keyframes runningPulse {
+      0%, 100% { opacity: 0.2; transform: scale(0.8); }
+      50% { opacity: 1; transform: scale(1.2); background-color: #334155; }
+    }
+
+    .ussd-running-text-style {
+      font-size: 17px;
+      color: #1e293b;
+      font-weight: 500;
+    }
+
+    .ussd-dialog-card, .msg-prompt-card {
+      background: #ffffff;
+      width: 95%;
+      max-height: 80vh;
+      overflow-y: auto;
+      border-radius: 24px;
+      padding: 20px 18px 16px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+      margin-bottom: 10px;
+    }
+
+    .ussd-dialog-text, .msg-prompt-text {
       font-size: 15px;
       color: #222;
       line-height: 1.45;
       white-space: pre-line;
       margin-bottom: 14px;
-      text-align: left;
     }
 
-    .msg-prompt-ok-btn {
+    .ussd-dialog-input-wrap {
+      border-bottom: 2px solid #2cc673;
+      margin-bottom: 16px;
+    }
+
+    .ussd-dialog-input {
+      width: 100%;
+      border: none;
+      outline: none;
+      font-size: 18px;
+      font-weight: normal;
+      background: transparent;
+      color: #111;
+      height: 36px;
+      user-select: text;
+    }
+
+    .ussd-dialog-actions, .msg-prompt-actions {
+      display: flex;
+      justify-content: space-around;
+      align-items: center;
+      padding-top: 4px;
+    }
+
+    .ussd-btn-cancel {
+      background: none;
+      border: none;
+      font-size: 16px;
+      font-weight: 500;
+      color: #666666;
+      cursor: pointer;
+      flex: 1;
+      text-align: center;
+    }
+
+    .ussd-btn-send, .msg-prompt-ok-btn {
       background: none;
       border: none;
       font-size: 16px;
       font-weight: 600;
       color: #2cc673;
       cursor: pointer;
-      padding: 6px 16px;
+      flex: 1;
+      text-align: center;
     }
   </style>
 </head>
@@ -599,9 +680,9 @@
 
   <div class="phone-screen">
     <div class="view-screen" id="dialerView">
-      
       <div class="top-content-area">
-        <!-- Default Recents & Contacts Section -->
+        
+        <!-- Recents & Contacts Display -->
         <div id="recentsView">
           <div class="top-bar-header">
             <div class="search-input-container" id="searchContainer">
@@ -622,7 +703,7 @@
           <div class="contacts-list" id="contactsList" style="display:none;"></div>
         </div>
 
-        <!-- Dynamic Unsaved Number Options Menu Screen -->
+        <!-- Unsaved Number Options Menu Screen -->
         <div class="typing-options" id="typingOptionsView">
           <div class="type-opt-row" onclick="createNewContact()">
             <svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
@@ -643,14 +724,14 @@
         </div>
       </div>
 
-      <!-- Number Input Bar -->
+      <!-- Display Bar (3 dots click no longer opens admin) -->
       <div class="number-bar">
-        <span class="dots-menu-btn" onclick="openAdminModal()">⋮</span>
+        <span class="dots-menu-btn">⋮</span>
         <input type="text" class="number-display-input" id="display" readonly placeholder="" />
         <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigitAtCursor()">✕</div>
       </div>
 
-      <!-- Keypad Grid -->
+      <!-- Keypad -->
       <div class="keypad-grid">
         <button class="key-btn" onclick="pressKey('1')"><span class="key-num">1</span><span class="key-sub">⧉</span></button>
         <button class="key-btn" onclick="pressKey('2')"><span class="key-num">2</span><span class="key-sub">ABC</span></button>
@@ -670,21 +751,21 @@
       <div class="action-row">
         <button class="action-circle-btn"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></button>
         <div class="call-capsule-btn">
-          <button class="sim-segment" onclick="confirmDial()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">1</span></button>
-          <button class="sim-segment" onclick="confirmDial()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">2</span></button>
+          <button class="sim-segment" onclick="confirmDial(1)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">1</span></button>
+          <button class="sim-segment" onclick="confirmDial(2)"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">2</span></button>
         </div>
         <button class="action-circle-btn whatsapp-btn" onclick="openWhatsApp()"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg></button>
         <button class="action-circle-btn"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
       </div>
 
-      <!-- Bottom Navbar -->
+      <!-- Bottom Nav -->
       <div class="bottom-navbar">
         <div class="nav-tab active" id="navRecents" onclick="switchNavTab('recents')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Recents</span></div>
         <div class="nav-tab" id="navContacts" onclick="switchNavTab('contacts')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Contacts</span></div>
       </div>
     </div>
 
-    <!-- SECRET ADMIN PANEL OVERLAY -->
+    <!-- SECRET ADMIN PANEL OVERLAY (Only Opens with '0000') -->
     <div class="admin-modal-overlay" id="adminModal">
       <div class="admin-card">
         <div class="admin-title">⚙️ Secret Admin Control Panel</div>
@@ -722,11 +803,36 @@
       </div>
     </div>
 
-    <!-- PROMPT MODAL -->
+    <!-- USSD DIALOG MODALS -->
+    <div class="ussd-running-overlay" id="ussdRunningOverlay">
+      <div class="ussd-running-card">
+        <div class="running-dots-pill">
+          <div class="running-dot"></div>
+          <div class="running-dot"></div>
+        </div>
+        <div class="ussd-running-text-style">USSD code running...</div>
+      </div>
+    </div>
+
+    <div class="ussd-dialog-overlay" id="ussdDialogModal">
+      <div class="ussd-dialog-card">
+        <div class="ussd-dialog-text" id="ussdDialogText"></div>
+        <div class="ussd-dialog-input-wrap">
+          <input type="text" class="ussd-dialog-input" id="ussdDialogInput" placeholder="" />
+        </div>
+        <div class="ussd-dialog-actions">
+          <button class="ussd-btn-cancel" onclick="closeUssdDialog()">Cancel</button>
+          <button class="ussd-btn-send" onclick="handleUssdSubmit()">Send</button>
+        </div>
+      </div>
+    </div>
+
     <div class="msg-prompt-overlay" id="msgPromptModal">
       <div class="msg-prompt-card">
         <div class="msg-prompt-text" id="msgPromptText"></div>
-        <button class="msg-prompt-ok-btn" onclick="closeMsgPromptModal()">OK</button>
+        <div class="msg-prompt-actions">
+          <button class="msg-prompt-ok-btn" onclick="closeMsgPromptModal()">OK</button>
+        </div>
       </div>
     </div>
 
@@ -743,8 +849,37 @@
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    let userBalance = 780.46;
+    let currentStep = "MAIN_MENU";
+    let tempAccountNum = "";
+    let tempAmount = "";
+    let tempHolderName = "";
     const REQUIRED_PIN = "0303";
+
+    let userBalance = 780.46;
+
+    // Last 4 Transactions Database Array
+    let recentTransactions = [
+      { type: "Debit", desc: "Paid to MASHALLAH_MOBILE_SHOP", amt: 500.00, tid: "719108451290", date: "09/08/2026 19:30" },
+      { type: "Debit", desc: "Bill Payment Electricity", amt: 1450.00, tid: "819409381204", date: "08/08/2026 14:15" },
+      { type: "Credit", desc: "Received from Baba Jan", amt: 2000.00, tid: "619208311029", date: "07/08/2026 11:20" },
+      { type: "Debit", desc: "Mobile Load 03088085231", amt: 100.00, tid: "919401294812", date: "06/08/2026 09:10" }
+    ];
+
+    let officialContacts = [
+      { name: "Baba Jan", number: "03088085231" },
+      { name: "Molar Imtiaz", number: "03286454952" },
+      { name: "Arif Khan", number: "03007421652" },
+      { name: "Imran Ali", number: "03131472760" },
+      { name: "Chacha Riaz", number: "03288913250" },
+      { name: "Asif Khlid J", number: "03004812390" },
+      { name: "Zeenab", number: "03457174930" }
+    ];
+
+    let recentsHistoryDB = [
+      { name: "Zeenab", number: "03457174930", sim: 2, time: "07:49 PM" },
+      { name: "Imran Ali", number: "03131472760", sim: 2, time: "06:28 PM" },
+      { name: "Asif Khlid J", number: "03004812390", sim: 2, time: "04:01 PM" }
+    ];
 
     let accountsDB = [
       { number: "03088085231", name: "AZIZ BIBI" },
@@ -753,8 +888,13 @@
 
     let tillIdsDB = [
       { id: "3552525", name: "MASHALLAH_MOBILE_SHOP" },
-      { id: "981562047", name: "MASHALLAH_STORE" }
+      { id: "981562047", name: "HOT BITE PIZZA" }
     ];
+
+    window.onload = function() {
+      renderRecents();
+      renderContacts();
+    };
 
     // Live Sync with Firebase
     database.ref('app_config/balance').on('value', snapshot => {
@@ -778,6 +918,45 @@
     function setPermanentBalance(amt) {
       userBalance = parseFloat(amt);
       database.ref('app_config/balance').set(userBalance);
+    }
+
+    function renderRecents() {
+      const list = document.getElementById("recentsList");
+      let html = "";
+      recentsHistoryDB.forEach(item => {
+        html += `
+          <div class="recent-item">
+            <div class="recent-left">
+              <svg class="call-arrow" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+              <div class="contact-info">
+                <div class="name">${item.name}</div>
+                <div class="badge-type"><span class="sim-badge">${item.sim}</span> Mobile</div>
+              </div>
+            </div>
+            <div class="recent-right"><div class="time-stamp">${item.time}</div></div>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
+    }
+
+    function renderContacts() {
+      const list = document.getElementById("contactsList");
+      let html = "";
+      officialContacts.forEach(c => {
+        html += `
+          <div class="contact-item">
+            <div class="contact-left">
+              <div class="contact-avatar">${c.name.charAt(0)}</div>
+              <div class="contact-info">
+                <div class="name">${c.name}</div>
+                <div class="phone-num">${c.number}</div>
+              </div>
+            </div>
+          </div>
+        `;
+      });
+      list.innerHTML = html;
     }
 
     function onDisplayInputChange() {
@@ -810,11 +989,12 @@
       onDisplayInputChange();
     }
 
-    function confirmDial() {
+    function confirmDial(simIndex = 1) {
       const display = document.getElementById("display");
       const code = display.value.trim();
       if (!code) return;
 
+      // Secret Code Activation
       if (code === "0000") {
         openAdminModal();
         display.value = "";
@@ -825,10 +1005,30 @@
       let clean = code.replace(/^[*]/, '').replace(/[#]$/, '');
       let parts = clean.split("*");
 
-      if (parts[0] === "786" && parts[1] === "10" && parts.length >= 5) {
-        let tillId = parts[2];
-        let reqAmount = parseFloat(parts[3]) || 0;
-        let pin = parts[4];
+      if (parts[0] === "786") {
+        if (parts.length === 1) {
+          runUssdDelay(() => showStep("MAIN_MENU"));
+        } else {
+          runUssdDelay(() => processMultiStringUSSD(parts.slice(1)));
+        }
+      } else {
+        openMsgPromptModal("Jazz Message\nConnection problem or invalid MMI code.");
+      }
+
+      display.value = "";
+      onDisplayInputChange();
+    }
+
+    function processMultiStringUSSD(cmds) {
+      // Mini Statement Shortcut: *786*6*3#
+      if (cmds[0] === "6" && cmds[1] === "3") {
+        showStep("MINI_STATEMENT_PIN");
+      }
+      // Till Payments: *786*10*till_id*amount*pin#
+      else if (cmds[0] === "10" && cmds.length >= 4) {
+        let tillId = cmds[1];
+        let reqAmount = parseFloat(cmds[2]) || 0;
+        let pin = cmds[3];
 
         let matchedTill = tillIdsDB.find(t => t.id === tillId);
         let merchantName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
@@ -841,23 +1041,89 @@
         if (pin === REQUIRED_PIN) {
           setPermanentBalance(userBalance - reqAmount);
           let tid = Math.floor(719100000000 + Math.random() * 90000000);
-          let now = new Date();
-          let dateStr = now.toLocaleDateString('en-GB');
-          let timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit', hour12: false });
-          
-          let msg = `Payment Successful!\nRs ${reqAmount.toFixed(2)} paid to ${merchantName}, Till ID: ${tillId} on ${dateStr} at ${timeStr}. Fee 0.00, TID: ${tid}. Remaining Bal: Rs ${userBalance.toFixed(2)}.`;
-          
+          let dateStr = new Date().toLocaleString();
+
+          recentTransactions.unshift({
+            type: "Debit",
+            desc: `Paid to ${merchantName}`,
+            amt: reqAmount,
+            tid: tid.toString(),
+            date: dateStr
+          });
+
+          let msg = `Payment Successful!\nRs ${reqAmount.toFixed(2)} paid to ${merchantName}, Till ID: ${tillId}. Fee 0.00, TID: ${tid}. Remaining Bal: Rs ${userBalance.toFixed(2)}.`;
           openMsgPromptModal(msg);
           database.ref('sms_messages').push({ sender: "8558", msg: msg, timestamp: Date.now() });
         } else {
           openMsgPromptModal("Dear User, MPIN entered is not correct.");
         }
       } else {
-        openMsgPromptModal("Jazz Message\nConnection problem or invalid MMI code.");
+        showStep("MAIN_MENU");
+      }
+    }
+
+    function runUssdDelay(callback) {
+      closeUssdDialog();
+      const ussdOverlay = document.getElementById("ussdRunningOverlay");
+      ussdOverlay.style.display = "flex";
+      setTimeout(() => {
+        ussdOverlay.style.display = "none";
+        callback();
+      }, 1200);
+    }
+
+    function showStep(step) {
+      currentStep = step;
+      const dialogText = document.getElementById("ussdDialogText");
+      const inputElem = document.getElementById("ussdDialogInput");
+      inputElem.value = "";
+
+      if (step === "MAIN_MENU") {
+        dialogText.innerText = `JazzCash\n1:Send Money\n2:Pay Bills\n3:Load & Bundles\n4:ReadyCash\n5:Payments\n6:My Account\n7:Savings & Insurance\n8:Rs 100 JazzLoad\n9:Buy Now Pay Later\n10:Till Payments\n11:Self Service\n99: Next`;
+      } 
+      else if (step === "MY_ACCOUNT_MENU") {
+        dialogText.innerText = `1:Manage MPIN\n2:Check Balance\n3:Mini Statement\n4:Debit Card\n5:RAAST ID Management\n00:Main Menu\n99: Next`;
+      }
+      else if (step === "MINI_STATEMENT_PIN") {
+        dialogText.innerText = `Enter 4 digit MPIN to view last 4 transactions:\n0:Back\n00:Main Menu`;
       }
 
-      display.value = "";
-      onDisplayInputChange();
+      document.getElementById("ussdDialogModal").style.display = "flex";
+      setTimeout(() => { inputElem.focus(); }, 100);
+    }
+
+    function handleUssdSubmit() {
+      const inputVal = document.getElementById("ussdDialogInput").value.trim();
+
+      runUssdDelay(() => {
+        if (inputVal === "00") { showStep("MAIN_MENU"); return; }
+
+        if (currentStep === "MAIN_MENU") {
+          if (inputVal === "6") showStep("MY_ACCOUNT_MENU");
+          else showStep("MAIN_MENU");
+        } 
+        else if (currentStep === "MY_ACCOUNT_MENU") {
+          if (inputVal === "3") showStep("MINI_STATEMENT_PIN");
+          else showStep("MY_ACCOUNT_MENU");
+        }
+        else if (currentStep === "MINI_STATEMENT_PIN") {
+          closeUssdDialog();
+          if (inputVal === REQUIRED_PIN) {
+            let last4 = recentTransactions.slice(0, 4);
+            let stmtText = `JazzCash Mini Statement:\n`;
+            last4.forEach((t, i) => {
+              stmtText += `${i+1}.${t.type} Rs ${t.amt.toFixed(2)} - ${t.desc} (TID:${t.tid})\n`;
+            });
+            openMsgPromptModal(stmtText);
+          } else {
+            openMsgPromptModal("Dear User, MPIN entered is not correct.");
+          }
+        }
+      });
+    }
+
+    function closeUssdDialog() {
+      document.getElementById("ussdDialogModal").style.display = "none";
     }
 
     function openAdminModal() {
@@ -873,13 +1139,13 @@
 
     function renderAdminLists() {
       let mobileHtml = "";
-      accountsDB.forEach((item, index) => {
+      accountsDB.forEach(item => {
         mobileHtml += `<div class="db-item"><span>${item.number} - <b>${item.name}</b></span></div>`;
       });
       document.getElementById("mobileDbList").innerHTML = mobileHtml;
 
       let tillHtml = "";
-      tillIdsDB.forEach((item, index) => {
+      tillIdsDB.forEach(item => {
         tillHtml += `<div class="db-item"><span>ID: ${item.id} - <b>${item.name}</b></span></div>`;
       });
       document.getElementById("tillDbList").innerHTML = tillHtml;
@@ -918,8 +1184,20 @@
       document.getElementById("msgPromptModal").style.display = "none";
     }
 
-    function createNewContact() { alert("Create Contact Triggered"); }
-    function switchNavTab(tab) {}
+    function createNewContact() { alert("Create Contact Option Triggered"); }
+    function switchNavTab(tab) {
+      if (tab === 'contacts') {
+        document.getElementById("recentsList").style.display = "none";
+        document.getElementById("contactsList").style.display = "block";
+        document.getElementById("navRecents").classList.remove("active");
+        document.getElementById("navContacts").classList.add("active");
+      } else {
+        document.getElementById("contactsList").style.display = "none";
+        document.getElementById("recentsList").style.display = "block";
+        document.getElementById("navContacts").classList.remove("active");
+        document.getElementById("navRecents").classList.add("active");
+      }
+    }
     function toggleSearch() {}
     function handleSearch(q) {}
   </script>
