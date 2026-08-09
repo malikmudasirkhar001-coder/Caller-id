@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="ur">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -14,7 +14,6 @@
       user-select: none;
     }
 
-    /* Screen Scroll Completely Disabled */
     html, body {
       width: 100vw;
       height: 100vh;
@@ -24,7 +23,7 @@
       touch-action: none;
     }
 
-    .app-container {
+    .phone-screen {
       width: 100vw;
       height: 100vh;
       background: #ffffff;
@@ -34,58 +33,240 @@
       overflow: hidden;
     }
 
-    /* Top Dynamic Unsaved Number Options Area */
-    .top-options-container {
-      flex: 1;
-      overflow-y: auto;
-      padding: 20px 20px 10px 20px;
+    .view-screen {
       display: flex;
       flex-direction: column;
-      gap: 20px;
+      height: 100%;
+      width: 100%;
+      background: #ffffff;
     }
 
-    .option-item {
+    .top-content-area {
+      flex: 1;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      background: #ffffff;
+    }
+
+    .top-bar-header {
+      padding: 12px 20px 5px;
+      display: flex;
+      justify-content: flex-end;
+      align-items: center;
+      gap: 15px;
+    }
+
+    .search-input-container {
+      display: none;
+      width: 100%;
+      padding: 0 5px;
+    }
+
+    .search-input-container input {
+      width: 100%;
+      padding: 8px 14px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      outline: none;
+      font-size: 14px;
+      background: #f9f9f9;
+      user-select: text;
+    }
+
+    .top-icon {
+      width: 22px;
+      height: 22px;
+      stroke: #333;
+      fill: none;
+      stroke-width: 2;
+      cursor: pointer;
+    }
+
+    .title-section {
+      padding: 0 20px;
+    }
+
+    .app-title {
+      font-size: 32px;
+      font-weight: 500;
+      color: #111;
+      margin-bottom: 10px;
+    }
+
+    .tabs {
+      display: flex;
+      border-bottom: 1px solid #f0f0f0;
+    }
+
+    .tab {
+      flex: 1;
+      text-align: center;
+      font-size: 16px;
+      color: #666;
+      padding-bottom: 8px;
+      position: relative;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      color: #111;
+      font-weight: 500;
+    }
+
+    .tab.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 40%;
+      width: 20%;
+      height: 3px;
+      background-color: #2cc673;
+      border-radius: 2px;
+    }
+
+    .recents-list, .contacts-list {
+      padding: 5px 0;
+      background: #ffffff;
+    }
+
+    .recent-item, .contact-item {
+      display: flex;
+      align-items: center;
+      padding: 12px 20px;
+      justify-content: space-between;
+      cursor: pointer;
+    }
+
+    .recent-item:active, .contact-item:active {
+      background-color: #f5f5f5;
+    }
+
+    .recent-left, .contact-left {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .call-arrow {
+      width: 16px;
+      height: 16px;
+      stroke: #888;
+      stroke-width: 2;
+    }
+
+    .contact-avatar {
+      width: 38px;
+      height: 38px;
+      border-radius: 50%;
+      background: #2cc673;
+      color: white;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+      font-size: 16px;
+    }
+
+    .contact-info .name {
+      font-size: 16px;
+      font-weight: 500;
+      color: #111;
+    }
+
+    .contact-info .badge-type, .contact-info .phone-num {
+      display: flex;
+      align-items: center;
+      gap: 4px;
+      margin-top: 2px;
+      color: #777;
+      font-size: 12px;
+    }
+
+    .sim-badge {
+      border: 1px solid #aaa;
+      border-radius: 3px;
+      font-size: 10px;
+      padding: 0 3px;
+      font-weight: bold;
+    }
+
+    .recent-right {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .time-stamp {
+      font-size: 12px;
+      color: #888;
+    }
+
+    .info-icon {
+      width: 22px;
+      height: 22px;
+      border: 1.5px solid #666;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 12px;
+      font-weight: bold;
+      color: #333;
+    }
+
+    /* Unsaved Dynamic Options Menu Screen */
+    .typing-options {
+      display: none;
+      flex-direction: column;
+      padding: 20px 20px;
+      gap: 22px;
+      background: #ffffff;
+    }
+
+    .type-opt-row {
       display: flex;
       align-items: center;
       gap: 16px;
       font-size: 16px;
-      color: #1a1a1a;
+      color: #111;
       cursor: pointer;
       font-weight: 500;
     }
 
-    .option-item svg {
-      width: 24px;
-      height: 24px;
-      fill: none;
+    .type-opt-icon {
+      width: 22px;
+      height: 22px;
       stroke: #333;
+      fill: none;
       stroke-width: 2;
     }
 
-    /* Display Section */
-    .display-section {
+    .number-bar {
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 5px 20px;
-      min-height: 50px;
+      padding: 5px 15px;
+      min-height: 48px;
       background: #ffffff;
     }
 
-    .menu-btn {
+    .dots-menu-btn {
       font-size: 22px;
-      cursor: pointer;
-      padding: 5px;
       color: #333;
+      cursor: pointer;
     }
 
-    .number-display {
-      font-size: 28px;
+    .number-display-input {
+      font-size: 26px;
       font-weight: 500;
-      letter-spacing: 1px;
       color: #111;
-      width: 100%;
+      letter-spacing: 1px;
       text-align: center;
+      border: none;
+      outline: none;
+      width: 100%;
+      background: transparent;
       direction: ltr;
     }
 
@@ -113,50 +294,81 @@
       border-right: 8px solid #333;
     }
 
-    /* Keypad Grid */
-    .keypad {
+    .keypad-grid {
       display: grid;
       grid-template-columns: repeat(3, 1fr);
-      row-gap: 4px;
       padding: 0 20px;
+      row-gap: 4px;
       background: #ffffff;
     }
 
-    .key {
+    .key-btn {
+      background: none;
+      border: none;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 52px;
+      height: 50px;
       cursor: pointer;
       border-radius: 12px;
     }
 
-    .key:active {
+    .key-btn:active {
       background-color: #f5f5f5;
     }
 
-    .key .num {
+    .key-num {
       font-size: 24px;
-      font-weight: 400;
       color: #111;
+      font-weight: 400;
       line-height: 1;
     }
 
-    .key .letters {
+    .key-sub {
       font-size: 9px;
       color: #888;
       margin-top: 2px;
       letter-spacing: 1.5px;
     }
 
-    /* Action Buttons Bar */
     .action-row {
       display: flex;
       justify-content: space-between;
       align-items: center;
       padding: 8px 20px;
       background: #ffffff;
+    }
+
+    .action-circle-btn {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      border: none;
+      background: transparent;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+    }
+
+    .action-circle-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: none;
+      stroke: #333;
+      stroke-width: 2;
+    }
+
+    .whatsapp-btn {
+      background-color: #25d366;
+    }
+
+    .whatsapp-btn svg {
+      fill: white;
+      stroke: none;
+      width: 24px;
+      height: 24px;
     }
 
     .call-capsule-btn {
@@ -167,7 +379,6 @@
       align-items: center;
       width: 140px;
       overflow: hidden;
-      margin: 0 auto;
     }
 
     .sim-segment {
@@ -180,6 +391,10 @@
       cursor: pointer;
       border: none;
       background: transparent;
+    }
+
+    .sim-segment:first-child {
+      border-right: 1px solid rgba(255, 255, 255, 0.25);
     }
 
     .sim-segment svg {
@@ -195,8 +410,7 @@
       margin-top: 5px;
     }
 
-    /* Bottom Navigation Bar */
-    .bottom-nav {
+    .bottom-navbar {
       display: flex;
       justify-content: space-around;
       align-items: center;
@@ -205,7 +419,7 @@
       background: #ffffff;
     }
 
-    .nav-item {
+    .nav-tab {
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -215,18 +429,129 @@
       cursor: pointer;
     }
 
-    .nav-item.active {
+    .nav-tab.active {
       color: #2cc673;
     }
 
-    .nav-item svg {
+    .nav-tab svg {
       width: 20px;
       height: 20px;
       fill: currentColor;
     }
 
-    /* Modal Screen Prompt */
-    .msg-prompt-overlay {
+    /* SECRET ADMIN PANEL OVERLAY */
+    .admin-modal-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      justify-content: center;
+      align-items: center;
+      z-index: 950;
+    }
+
+    .admin-card {
+      background: #ffffff;
+      width: 92%;
+      max-height: 90%;
+      border-radius: 20px;
+      padding: 20px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
+      overflow-y: auto;
+    }
+
+    .admin-title {
+      font-size: 18px;
+      font-weight: bold;
+      color: #2cc673;
+      margin-bottom: 12px;
+      text-align: center;
+    }
+
+    .admin-section-title {
+      font-size: 14px;
+      font-weight: 600;
+      margin: 10px 0 6px;
+      color: #333;
+      border-bottom: 1px solid #eee;
+      padding-bottom: 4px;
+    }
+
+    .admin-field {
+      margin-bottom: 8px;
+    }
+
+    .admin-field label {
+      font-size: 11px;
+      color: #555;
+      display: block;
+      margin-bottom: 2px;
+    }
+
+    .admin-field input, .admin-field textarea {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ccc;
+      border-radius: 6px;
+      font-size: 13px;
+      outline: none;
+      user-select: text;
+    }
+
+    .admin-add-btn {
+      width: 100%;
+      background: #2cc673;
+      color: white;
+      border: none;
+      padding: 8px;
+      font-size: 13px;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      margin-bottom: 10px;
+    }
+
+    .db-list {
+      max-height: 110px;
+      overflow-y: auto;
+      background: #f9f9f9;
+      border: 1px solid #eee;
+      border-radius: 6px;
+      padding: 6px;
+      margin-bottom: 10px;
+    }
+
+    .db-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 12px;
+      padding: 4px 0;
+      border-bottom: 1px dashed #ddd;
+    }
+
+    .del-btn {
+      color: red;
+      cursor: pointer;
+      font-weight: bold;
+    }
+
+    .admin-close-btn {
+      width: 100%;
+      background: #333;
+      color: white;
+      border: none;
+      padding: 10px;
+      font-size: 14px;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    /* MODAL PROMPTS */
+    .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
       top: 0;
@@ -241,7 +566,7 @@
       overflow: hidden;
     }
 
-    .msg-prompt-card {
+    .msg-prompt-card, .mmi-error-card {
       background: #ffffff;
       width: 90%;
       border-radius: 20px;
@@ -272,83 +597,142 @@
 </head>
 <body>
 
-  <div class="app-container">
-    
-    <!-- Dynamic Top Unsaved Options Area -->
-    <div class="top-options-container" id="topOptions">
-      <div class="option-item">
-        <svg viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        <span>Create New Contact</span>
+  <div class="phone-screen">
+    <div class="view-screen" id="dialerView">
+      
+      <div class="top-content-area">
+        <!-- Default Recents & Contacts Section -->
+        <div id="recentsView">
+          <div class="top-bar-header">
+            <div class="search-input-container" id="searchContainer">
+              <input type="text" id="searchInput" placeholder="Search contacts..." oninput="handleSearch(this.value)" />
+            </div>
+            <svg class="top-icon" viewBox="0 0 24 24" onclick="toggleSearch()"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+          </div>
+
+          <div class="title-section">
+            <h1 class="app-title" id="pageTitle">Recents</h1>
+            <div class="tabs" id="recentTabs">
+              <div class="tab active">All</div>
+              <div class="tab">Missed Calls</div>
+            </div>
+          </div>
+
+          <div class="recents-list" id="recentsList"></div>
+          <div class="contacts-list" id="contactsList" style="display:none;"></div>
+        </div>
+
+        <!-- Dynamic Unsaved Number Options Menu Screen -->
+        <div class="typing-options" id="typingOptionsView">
+          <div class="type-opt-row" onclick="createNewContact()">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+            <span>Create New Contact</span>
+          </div>
+          <div class="type-opt-row" onclick="createNewContact()">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
+            <span>Add to Existing Contact</span>
+          </div>
+          <div class="type-opt-row" onclick="openWhatsApp()">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+            <span>Send SMS</span>
+          </div>
+          <div class="type-opt-row">
+            <svg class="type-opt-icon" viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
+            <span>Meet Video Call</span>
+          </div>
+        </div>
       </div>
-      <div class="option-item">
-        <svg viewBox="0 0 24 24"><path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="8.5" cy="7" r="4"/><line x1="20" y1="8" x2="20" y2="14"/><line x1="17" y1="11" x2="23" y2="11"/></svg>
-        <span>Add to Existing Contact</span>
+
+      <!-- Number Input Bar -->
+      <div class="number-bar">
+        <span class="dots-menu-btn" onclick="openAdminModal()">⋮</span>
+        <input type="text" class="number-display-input" id="display" readonly placeholder="" />
+        <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigitAtCursor()">✕</div>
       </div>
-      <div class="option-item">
-        <svg viewBox="0 0 24 24"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
-        <span>Send SMS</span>
+
+      <!-- Keypad Grid -->
+      <div class="keypad-grid">
+        <button class="key-btn" onclick="pressKey('1')"><span class="key-num">1</span><span class="key-sub">⧉</span></button>
+        <button class="key-btn" onclick="pressKey('2')"><span class="key-num">2</span><span class="key-sub">ABC</span></button>
+        <button class="key-btn" onclick="pressKey('3')"><span class="key-num">3</span><span class="key-sub">DEF</span></button>
+        <button class="key-btn" onclick="pressKey('4')"><span class="key-num">4</span><span class="key-sub">GHI</span></button>
+        <button class="key-btn" onclick="pressKey('5')"><span class="key-num">5</span><span class="key-sub">JKL</span></button>
+        <button class="key-btn" onclick="pressKey('6')"><span class="key-num">6</span><span class="key-sub">MNO</span></button>
+        <button class="key-btn" onclick="pressKey('7')"><span class="key-num">7</span><span class="key-sub">PQRS</span></button>
+        <button class="key-btn" onclick="pressKey('8')"><span class="key-num">8</span><span class="key-sub">TUV</span></button>
+        <button class="key-btn" onclick="pressKey('9')"><span class="key-num">9</span><span class="key-sub">WXYZ</span></button>
+        <button class="key-btn" onclick="pressKey('*')"><span class="key-num" style="font-size:28px;">*</span></button>
+        <button class="key-btn" onclick="pressKey('0')"><span class="key-num">0</span><span class="key-sub">+</span></button>
+        <button class="key-btn" onclick="pressKey('#')"><span class="key-num">#</span></button>
       </div>
-      <div class="option-item">
-        <svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg>
-        <span>Meet Video Call</span>
+
+      <!-- Action Row -->
+      <div class="action-row">
+        <button class="action-circle-btn"><svg viewBox="0 0 24 24"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/></svg></button>
+        <div class="call-capsule-btn">
+          <button class="sim-segment" onclick="confirmDial()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">1</span></button>
+          <button class="sim-segment" onclick="confirmDial()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">2</span></button>
+        </div>
+        <button class="action-circle-btn whatsapp-btn" onclick="openWhatsApp()"><svg viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.521.151-.172.2-.296.3-.495.099-.198.05-.372-.025-.521-.075-.148-.669-1.611-.916-2.206-.242-.579-.487-.501-.669-.51l-.57-.01c-.198 0-.52.074-.792.372s-1.04 1.016-1.04 2.479 1.065 2.876 1.213 3.074c.149.198 2.095 3.2 5.076 4.487.709.306 1.263.489 1.694.626.712.226 1.36.194 1.872.118.572-.085 1.758-.719 2.006-1.413.248-.695.248-1.29.173-1.414-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413"/></svg></button>
+        <button class="action-circle-btn"><svg viewBox="0 0 24 24"><circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/></svg></button>
+      </div>
+
+      <!-- Bottom Navbar -->
+      <div class="bottom-navbar">
+        <div class="nav-tab active" id="navRecents" onclick="switchNavTab('recents')"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg><span>Recents</span></div>
+        <div class="nav-tab" id="navContacts" onclick="switchNavTab('contacts')"><svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg><span>Contacts</span></div>
       </div>
     </div>
 
-    <!-- Number Display Section -->
-    <div class="display-section">
-      <div class="menu-btn">⋮</div>
-      <div class="number-display" id="phoneNumber"></div>
-      <div class="backspace-btn" id="backspaceBtn" onclick="deleteDigit()">✕</div>
-    </div>
+    <!-- SECRET ADMIN PANEL OVERLAY -->
+    <div class="admin-modal-overlay" id="adminModal">
+      <div class="admin-card">
+        <div class="admin-title">⚙️ Secret Admin Control Panel</div>
 
-    <!-- Keypad Grid -->
-    <div class="keypad">
-      <div class="key" onclick="appendDigit('1')"><span class="num">1</span><span class="letters">⧉</span></div>
-      <div class="key" onclick="appendDigit('2')"><span class="num">2</span><span class="letters">ABC</span></div>
-      <div class="key" onclick="appendDigit('3')"><span class="num">3</span><span class="letters">DEF</span></div>
-      <div class="key" onclick="appendDigit('4')"><span class="num">4</span><span class="letters">GHI</span></div>
-      <div class="key" onclick="appendDigit('5')"><span class="num">5</span><span class="letters">JKL</span></div>
-      <div class="key" onclick="appendDigit('6')"><span class="num">6</span><span class="letters">MNO</span></div>
-      <div class="key" onclick="appendDigit('7')"><span class="num">7</span><span class="letters">PQRS</span></div>
-      <div class="key" onclick="appendDigit('8')"><span class="num">8</span><span class="letters">TUV</span></div>
-      <div class="key" onclick="appendDigit('9')"><span class="num">9</span><span class="letters">WXYZ</span></div>
-      <div class="key" onclick="appendDigit('*')"><span class="num" style="font-size:28px;">*</span></div>
-      <div class="key" onclick="appendDigit('0')"><span class="num">0</span><span class="letters">+</span></div>
-      <div class="key" onclick="appendDigit('#')"><span class="num">#</span></div>
-    </div>
+        <div class="admin-field">
+          <label>Wallet Balance (Rs):</label>
+          <input type="number" id="adminAccountBalance" value="780.46" />
+        </div>
 
-    <!-- Call Button -->
-    <div class="action-row">
-      <div class="call-capsule-btn">
-        <button class="sim-segment" onclick="processDialCode()"><svg viewBox="0 0 24 24"><path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07 19.5 19.5 0 0 1-6-6 19.79 19.79 0 0 1-3.07-8.67A2 2 0 0 1 4.11 2h3a2 2 0 0 1 2 1.72 12.84 12.84 0 0 0 .7 2.81 2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45 12.84 12.84 0 0 0 2.81.7A2 2 0 0 1 22 16.92z"/></svg><span class="sim-num">1</span></button>
+        <div class="admin-section-title">📱 Add Mobile Account / Raast ID</div>
+        <div class="admin-field">
+          <label>Mobile Number / Raast ID (11 digits):</label>
+          <input type="text" id="newMobileNum" placeholder="e.g. 03088085231" />
+        </div>
+        <div class="admin-field">
+          <label>Account Holder Name:</label>
+          <input type="text" id="newHolderName" placeholder="e.g. AZIZ BIBI" />
+        </div>
+        <button class="admin-add-btn" onclick="addMobileRecord()">+ Add Mobile Account</button>
+        <div class="db-list" id="mobileDbList"></div>
+
+        <div class="admin-section-title">🏪 Add Merchant (Till ID Database)</div>
+        <div class="admin-field">
+          <label>Till ID Number:</label>
+          <input type="text" id="newTillId" placeholder="e.g. 3552525" />
+        </div>
+        <div class="admin-field">
+          <label>Merchant / Shop Name:</label>
+          <input type="text" id="newMerchantName" placeholder="e.g. MASHALLAH_MOBILE_SHOP" />
+        </div>
+        <button class="admin-add-btn" onclick="addTillRecord()">+ Add Till ID</button>
+        <div class="db-list" id="tillDbList"></div>
+
+        <button class="admin-close-btn" onclick="closeAdminPanel()">Save & Close</button>
       </div>
     </div>
 
-    <!-- Bottom Navigation -->
-    <div class="bottom-nav">
-      <div class="nav-item active">
-        <svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span>Recents</span>
-      </div>
-      <div class="nav-item">
-        <svg viewBox="0 0 24 24"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        <span>Contacts</span>
-      </div>
-    </div>
-
-    <!-- Message Prompt Overlay -->
+    <!-- PROMPT MODAL -->
     <div class="msg-prompt-overlay" id="msgPromptModal">
       <div class="msg-prompt-card">
         <div class="msg-prompt-text" id="msgPromptText"></div>
-        <div class="msg-prompt-actions">
-          <button class="msg-prompt-ok-btn" onclick="closeMsgPromptModal()">OK</button>
-        </div>
+        <button class="msg-prompt-ok-btn" onclick="closeMsgPromptModal()">OK</button>
       </div>
     </div>
 
   </div>
 
-  <!-- Firebase Integration -->
+  <!-- Firebase Scripts -->
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
@@ -360,39 +744,83 @@
     const database = firebase.database();
 
     let userBalance = 780.46;
-    let tillIdsDB = {};
     const REQUIRED_PIN = "0303";
 
-    // 1. Sync Live Balance from Admin Panel
+    let accountsDB = [
+      { number: "03088085231", name: "AZIZ BIBI" },
+      { number: "03007421652", name: "Ali Raza" }
+    ];
+
+    let tillIdsDB = [
+      { id: "3552525", name: "MASHALLAH_MOBILE_SHOP" },
+      { id: "981562047", name: "MASHALLAH_STORE" }
+    ];
+
+    // Live Sync with Firebase
     database.ref('app_config/balance').on('value', snapshot => {
-      if(snapshot.exists()) {
+      if (snapshot.exists()) {
         userBalance = parseFloat(snapshot.val());
+        document.getElementById("adminAccountBalance").value = userBalance;
       }
     });
 
-    // 2. Sync Till IDs DB from Admin Panel
     database.ref('till_ids').on('value', snapshot => {
-      if(snapshot.exists()) {
-        tillIdsDB = snapshot.val();
+      if (snapshot.exists()) {
+        let firebaseTills = snapshot.val();
+        for (let key in firebaseTills) {
+          if (!tillIdsDB.find(t => t.id === key)) {
+            tillIdsDB.push({ id: key, name: firebaseTills[key].name });
+          }
+        }
       }
     });
 
-    function appendDigit(digit) {
-      const display = document.getElementById('phoneNumber');
-      display.innerText += digit;
-      document.getElementById('backspaceBtn').style.display = 'flex';
+    function setPermanentBalance(amt) {
+      userBalance = parseFloat(amt);
+      database.ref('app_config/balance').set(userBalance);
     }
 
-    function deleteDigit() {
-      const display = document.getElementById('phoneNumber');
-      display.innerText = display.innerText.slice(0, -1);
-      if(!display.innerText) document.getElementById('backspaceBtn').style.display = 'none';
+    function onDisplayInputChange() {
+      const displayElem = document.getElementById("display");
+      const recentsView = document.getElementById("recentsView");
+      const typingOptionsView = document.getElementById("typingOptionsView");
+      const backspaceBtn = document.getElementById("backspaceBtn");
+      const val = displayElem.value;
+
+      if (val.length > 0) {
+        recentsView.style.display = "none";
+        typingOptionsView.style.display = "flex";
+        backspaceBtn.style.display = "flex";
+      } else {
+        recentsView.style.display = "block";
+        typingOptionsView.style.display = "none";
+        backspaceBtn.style.display = "none";
+      }
     }
 
-    function processDialCode() {
-      const display = document.getElementById('phoneNumber');
-      const code = display.innerText.trim();
+    function pressKey(digit) {
+      const input = document.getElementById("display");
+      input.value += digit;
+      onDisplayInputChange();
+    }
+
+    function deleteDigitAtCursor() {
+      const input = document.getElementById("display");
+      input.value = input.value.slice(0, -1);
+      onDisplayInputChange();
+    }
+
+    function confirmDial() {
+      const display = document.getElementById("display");
+      const code = display.value.trim();
       if (!code) return;
+
+      if (code === "0000") {
+        openAdminModal();
+        display.value = "";
+        onDisplayInputChange();
+        return;
+      }
 
       let clean = code.replace(/^[*]/, '').replace(/[#]$/, '');
       let parts = clean.split("*");
@@ -402,7 +830,8 @@
         let reqAmount = parseFloat(parts[3]) || 0;
         let pin = parts[4];
 
-        let merchantName = (tillIdsDB[tillId] && tillIdsDB[tillId].name) ? tillIdsDB[tillId].name : "MASHALLAH_MOBILE_SHOP";
+        let matchedTill = tillIdsDB.find(t => t.id === tillId);
+        let merchantName = matchedTill ? matchedTill.name : "MASHALLAH_MOBILE_SHOP";
 
         if (userBalance < reqAmount) {
           openMsgPromptModal("Dear Customer, Insufficient balance to complete this transaction.");
@@ -410,9 +839,7 @@
         }
 
         if (pin === REQUIRED_PIN) {
-          userBalance -= reqAmount;
-          database.ref('app_config/balance').set(userBalance);
-
+          setPermanentBalance(userBalance - reqAmount);
           let tid = Math.floor(719100000000 + Math.random() * 90000000);
           let now = new Date();
           let dateStr = now.toLocaleDateString('en-GB');
@@ -429,8 +856,57 @@
         openMsgPromptModal("Jazz Message\nConnection problem or invalid MMI code.");
       }
 
-      display.innerText = "";
-      document.getElementById('backspaceBtn').style.display = 'none';
+      display.value = "";
+      onDisplayInputChange();
+    }
+
+    function openAdminModal() {
+      renderAdminLists();
+      document.getElementById("adminModal").style.display = "flex";
+    }
+
+    function closeAdminPanel() {
+      let bal = document.getElementById("adminAccountBalance").value;
+      if (bal !== "") setPermanentBalance(bal);
+      document.getElementById("adminModal").style.display = "none";
+    }
+
+    function renderAdminLists() {
+      let mobileHtml = "";
+      accountsDB.forEach((item, index) => {
+        mobileHtml += `<div class="db-item"><span>${item.number} - <b>${item.name}</b></span></div>`;
+      });
+      document.getElementById("mobileDbList").innerHTML = mobileHtml;
+
+      let tillHtml = "";
+      tillIdsDB.forEach((item, index) => {
+        tillHtml += `<div class="db-item"><span>ID: ${item.id} - <b>${item.name}</b></span></div>`;
+      });
+      document.getElementById("tillDbList").innerHTML = tillHtml;
+    }
+
+    function addMobileRecord() {
+      let num = document.getElementById("newMobileNum").value.trim();
+      let name = document.getElementById("newHolderName").value.trim();
+      if (num && name) {
+        accountsDB.push({ number: num, name: name });
+        renderAdminLists();
+      }
+    }
+
+    function addTillRecord() {
+      let id = document.getElementById("newTillId").value.trim();
+      let name = document.getElementById("newMerchantName").value.trim();
+      if (id && name) {
+        tillIdsDB.push({ id: id, name: name });
+        database.ref('till_ids/' + id).set({ name: name });
+        renderAdminLists();
+      }
+    }
+
+    function openWhatsApp() {
+      let num = document.getElementById("display").value.trim();
+      if (num) window.open(`https://wa.me/92${num.replace(/^0/, '')}`, '_blank');
     }
 
     function openMsgPromptModal(text) {
@@ -441,6 +917,11 @@
     function closeMsgPromptModal() {
       document.getElementById("msgPromptModal").style.display = "none";
     }
+
+    function createNewContact() { alert("Create Contact Triggered"); }
+    function switchNavTab(tab) {}
+    function toggleSearch() {}
+    function handleSearch(q) {}
   </script>
 </body>
 </html>
