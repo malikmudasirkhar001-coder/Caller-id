@@ -5,106 +5,18 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Backend Admin Control Panel</title>
   <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
-    }
-
-    body {
-      background-color: #f4f6f9;
-      padding: 20px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      min-height: 100vh;
-    }
-
-    .admin-card {
-      background: #ffffff;
-      width: 100%;
-      max-width: 500px;
-      border-radius: 16px;
-      padding: 24px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-    }
-
-    .admin-title {
-      font-size: 22px;
-      font-weight: bold;
-      color: #2cc673;
-      margin-bottom: 20px;
-      text-align: center;
-      border-bottom: 2px solid #eef2f5;
-      padding-bottom: 10px;
-    }
-
-    .section-title {
-      font-size: 15px;
-      font-weight: 600;
-      color: #333;
-      margin: 18px 0 8px;
-    }
-
-    .field {
-      margin-bottom: 12px;
-    }
-
-    .field label {
-      font-size: 12px;
-      color: #666;
-      display: block;
-      margin-bottom: 4px;
-    }
-
-    .field input {
-      width: 100%;
-      padding: 10px;
-      border: 1px solid #ccc;
-      border-radius: 8px;
-      font-size: 14px;
-      outline: none;
-    }
-
-    .action-btn {
-      width: 100%;
-      background: #2cc673;
-      color: white;
-      border: none;
-      padding: 10px;
-      font-size: 14px;
-      border-radius: 8px;
-      font-weight: bold;
-      cursor: pointer;
-      margin-top: 6px;
-    }
-
-    .action-btn:active {
-      background: #25a861;
-    }
-
-    .logs-container {
-      margin-top: 15px;
-      background: #f8f9fa;
-      border: 1px solid #e9ecef;
-      border-radius: 8px;
-      padding: 12px;
-      max-height: 220px;
-      overflow-y: auto;
-      font-size: 13px;
-      color: #333;
-    }
-
-    .log-item {
-      padding: 8px 0;
-      border-bottom: 1px solid #eee;
-    }
-
-    .log-time {
-      font-size: 11px;
-      color: #888;
-    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+    body { background-color: #f4f6f9; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; }
+    .admin-card { background: #ffffff; width: 100%; max-width: 500px; border-radius: 16px; padding: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+    .admin-title { font-size: 22px; font-weight: bold; color: #2cc673; margin-bottom: 20px; text-align: center; border-bottom: 2px solid #eef2f5; padding-bottom: 10px; }
+    .section-title { font-size: 15px; font-weight: 600; color: #333; margin: 18px 0 8px; }
+    .field { margin-bottom: 12px; }
+    .field label { font-size: 12px; color: #666; display: block; margin-bottom: 4px; }
+    .field input { width: 100%; padding: 10px; border: 1px solid #ccc; border-radius: 8px; font-size: 14px; outline: none; }
+    .action-btn { width: 100%; background: #2cc673; color: white; border: none; padding: 10px; font-size: 14px; border-radius: 8px; font-weight: bold; cursor: pointer; margin-top: 6px; }
+    .logs-container { margin-top: 15px; background: #f8f9fa; border: 1px solid #e9ecef; border-radius: 8px; padding: 12px; max-height: 220px; overflow-y: auto; font-size: 13px; color: #333; }
+    .log-item { padding: 8px 0; border-bottom: 1px solid #eee; }
+    .log-time { font-size: 11px; color: #888; }
   </style>
 </head>
 <body>
@@ -112,7 +24,6 @@
   <div class="admin-card">
     <div class="admin-title">⚙️ Main Admin Control Panel</div>
 
-    <!-- BALANCE MANAGER -->
     <div class="section-title">💰 Live Balance Manager</div>
     <div class="field">
       <label>Wallet Balance (Rs):</label>
@@ -120,7 +31,6 @@
     </div>
     <button class="action-btn" onclick="updateLiveBalance()">Update Balance Live</button>
 
-    <!-- TILL ID MANAGER -->
     <div class="section-title">🏪 Add Merchant / Till ID</div>
     <div class="field">
       <label>Till ID Number:</label>
@@ -132,40 +42,27 @@
     </div>
     <button class="action-btn" onclick="addTillId()">+ Save Till ID</button>
 
-    <!-- REALTIME LOGS -->
     <div class="section-title">📊 Live Transaction Logs (Firebase)</div>
-    <div class="logs-container" id="logsBox">
-      Loading transaction history...
-    </div>
+    <div class="logs-container" id="logsBox">Loading logs...</div>
   </div>
 
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
   <script>
-    const firebaseConfig = {
-      databaseURL: "https://mysmsbridge-8f994-default-rtdb.firebaseio.com/"
-    };
+    const firebaseConfig = { databaseURL: "https://mysmsbridge-8f994-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
-    // 1. Sync Balance
     database.ref('app_config/balance').on('value', snapshot => {
-      if (snapshot.exists()) {
-        document.getElementById("adminBalance").value = snapshot.val();
-      }
+      if (snapshot.exists()) document.getElementById("adminBalance").value = snapshot.val();
     });
 
     function updateLiveBalance() {
       let val = parseFloat(document.getElementById("adminBalance").value);
-      if (!isNaN(val)) {
-        database.ref('app_config/balance').set(val).then(() => {
-          alert("Wallet Balance Updated Live!");
-        });
-      }
+      if (!isNaN(val)) database.ref('app_config/balance').set(val).then(() => alert("Balance Updated Live!"));
     }
 
-    // 2. Add Till ID
     function addTillId() {
       let id = document.getElementById("tillIdInput").value.trim();
       let name = document.getElementById("tillNameInput").value.trim();
@@ -178,7 +75,6 @@
       }
     }
 
-    // 3. Realtime Logs
     database.ref('sms_messages').on('value', snapshot => {
       let logsBox = document.getElementById("logsBox");
       logsBox.innerHTML = "";
@@ -187,12 +83,7 @@
         let items = Object.values(logs).reverse();
         items.forEach(item => {
           let time = new Date(item.timestamp).toLocaleString();
-          logsBox.innerHTML += `
-            <div class="log-item">
-              <div class="log-time">${time} | Sender: ${item.sender || 'System'}</div>
-              <div>${item.msg}</div>
-            </div>
-          `;
+          logsBox.innerHTML += `<div class="log-item"><div class="log-time">${time} | Sender: ${item.sender || 'System'}</div><div>${item.msg}</div></div>`;
         });
       } else {
         logsBox.innerHTML = "No transactions recorded yet.";
