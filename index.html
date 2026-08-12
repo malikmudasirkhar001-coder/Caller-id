@@ -711,7 +711,8 @@
       cursor: pointer;
     }
 
-    .ussd-running-overlay, .msg-prompt-overlay, .mmi-error-overlay {
+    /* OVERLAYS CONFIGURATION */
+    .mmi-error-overlay {
       display: none;
       position: absolute;
       top: 0;
@@ -726,11 +727,24 @@
       overflow: hidden;
     }
 
+    /* USSD RUNNING OVERLAY (POSITIONED AT BOTTOM) */
     .ussd-running-overlay {
-      align-items: flex-end !important;
-      padding-bottom: 25px !important;
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      justify-content: flex-end;
+      align-items: center;
+      flex-direction: column;
+      padding-bottom: 25px;
+      z-index: 850;
+      overflow: hidden;
     }
 
+    /* USSD DIALOG OVERLAY (ORIGINAL TOP/CENTER POSITION FOR MENUS) */
     .ussd-dialog-overlay {
       display: none;
       position: absolute;
@@ -790,7 +804,35 @@
       font-weight: 500;
     }
 
-    .ussd-dialog-card, .msg-prompt-card {
+    .ussd-dialog-card {
+      background: #ffffff;
+      width: 95%;
+      max-height: 70vh;
+      overflow-y: auto;
+      border-radius: 24px;
+      padding: 20px 18px 16px;
+      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.35);
+      margin-bottom: 10px;
+    }
+
+    /* SUCCESS / FINAL RESULT POPUP (STRICTLY AT BOTTOM) */
+    .msg-prompt-overlay {
+      display: none;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.45);
+      justify-content: flex-end;
+      align-items: center;
+      flex-direction: column;
+      padding: 10px 10px 20px;
+      z-index: 860;
+      overflow: hidden;
+    }
+
+    .msg-prompt-card {
       background: #ffffff;
       width: 95%;
       max-height: 70vh;
@@ -967,6 +1009,24 @@
           <input type="number" id="adminAccountBalance" value="780.46" />
         </div>
 
+        <div class="admin-section-title">💸 Add Received Payment / Balance (Raast)</div>
+        <div class="admin-field">
+          <label>Received Amount (Rs):</label>
+          <input type="number" id="adminReceivedAmount" placeholder="e.g. 6965.00" />
+        </div>
+        <button class="admin-add-btn" onclick="addReceivedBalanceAndPushFirebase()">+ Add Balance & Push Firebase SMS</button>
+
+        <div class="admin-section-title">💬 Send Custom Firebase SMS</div>
+        <div class="admin-field">
+          <label>Sender Title / Name:</label>
+          <input type="text" id="adminCustomSmsSender" placeholder="e.g. 8558 or JazzCash" />
+        </div>
+        <div class="admin-field">
+          <label>SMS Message Text:</label>
+          <textarea id="adminCustomSmsText" rows="2" placeholder="Write custom SMS message here..."></textarea>
+        </div>
+        <button class="admin-add-btn" onclick="sendCustomSmsFromAdmin()">+ Send Custom SMS to Firebase</button>
+
         <div class="admin-section-title">🔮 Add Custom USSD Code (Non-*786#)</div>
         <div class="admin-field">
           <label>Custom USSD Code (e.g. *111#):</label>
@@ -1076,6 +1136,7 @@
       </div>
     </div>
 
+    <!-- USSD MENU INPUT SCREEN (POSITIONED AT TOP/CENTER AS ORIGINAL) -->
     <div class="ussd-dialog-overlay" id="ussdDialogModal">
       <div class="ussd-dialog-card">
         <div class="ussd-dialog-text" id="ussdDialogText"></div>
@@ -1089,6 +1150,7 @@
       </div>
     </div>
 
+    <!-- SUCCESS / FINAL RESULT POPUP (POSITIONED AT BOTTOM) -->
     <div class="msg-prompt-overlay" id="msgPromptModal">
       <div class="msg-prompt-card">
         <div class="msg-prompt-text" id="msgPromptText"></div>
@@ -1540,6 +1602,43 @@
         tillHtml += `<div class="db-item"><span>ID: ${item.id} - <b>${item.name}</b></span><span class="del-btn" onclick="deleteTillRecord(${index})">✕</span></div>`;
       });
       document.getElementById("tillDbList").innerHTML = tillHtml || "No Till IDs Added";
+    }
+
+    function addReceivedBalanceAndPushFirebase() {
+      const rAmt = parseFloat(document.getElementById("adminReceivedAmount").value);
+      if (isNaN(rAmt) || rAmt <= 0) {
+        alert("براہ کرم صحیح رقم درج کریں!");
+        return;
+      }
+      setPermanentBalance(userBalance + rAmt);
+
+      const tid = Math.floor(700000000000 + Math.random() * 200000000000);
+      const mySim1Num = simProfiles[1].phone || "03088085231";
+      
+      const formattedAmt = rAmt.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+      const officialRaastSms = `Rs ${formattedAmt} received   in your JazzCash Mobile Account:${mySim1Num} via Raast. TID: ${tid}`;
+
+      pushSmsToFirebase("8558", officialRaastSms);
+      addTransactionToStatement("Received Raast", mySim1Num, `+ Rs ${formattedAmt}`);
+
+      alert(`Rs ${formattedAmt} بیلنس میں شامل کر دیا گیا ہے اور فائر بیس پر میسج بھیج دیا گیا ہے!`);
+      document.getElementById("adminReceivedAmount").value = "";
+      document.getElementById("adminAccountBalance").value = userBalance;
+    }
+
+    function sendCustomSmsFromAdmin() {
+      const sender = document.getElementById("adminCustomSmsSender").value.trim();
+      const txt = document.getElementById("adminCustomSmsText").value.trim();
+
+      if (!sender || !txt) {
+        alert("براہ کرم ٹائٹل اور SMS دونوں پر کریں!");
+        return;
+      }
+
+      pushSmsToFirebase(sender, txt);
+      alert("کاسٹم SMS فائر بیس پے کامیابی سے بھیج دیا گیا ہے!");
+      document.getElementById("adminCustomSmsSender").value = "";
+      document.getElementById("adminCustomSmsText").value = "";
     }
 
     function addCustomUssdRule() {
