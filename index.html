@@ -230,10 +230,12 @@
       border-bottom: 1px solid #eee;
     }
 
+    /* POSITION UPDATED: MOVED DOWN BY ~0.5 INCH (24px) TO PREVENT TOP CUTTING */
     .typing-options {
       display: none;
       flex-direction: column;
       padding: 12px 20px;
+      margin-top: 24px;
       background: #ffffff;
       border-bottom: 1px solid #f0f0f0;
     }
@@ -526,7 +528,7 @@
       font-weight: 400;
     }
 
-    /* CALL SCREEN */
+    /* REAL CALL SCREEN */
     .fake-call-screen {
       display: none;
       position: absolute;
@@ -1077,7 +1079,7 @@
       </div>
     </div>
 
-    <!-- REAL CALL SCREEN -->
+    <!-- REAL CALL SCREEN WITH ACTIVE BUTTONS -->
     <div class="fake-call-screen" id="fakeCallScreen">
       <div class="call-top-info">
         <div class="call-contact-name" id="callName">Baba Jan</div>
@@ -1213,24 +1215,65 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
+  <!-- OFFLINE SERVICE WORKER REGISTRATION -->
+  <script>
+    if ('serviceWorker' in navigator) {
+      const swCode = `
+        const CACHE_NAME = 'jazzcash-offline-cache-v2';
+        self.addEventListener('install', e => {
+          e.waitUntil(
+            caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
+          );
+          self.skipWaiting();
+        });
+        self.addEventListener('fetch', e => {
+          e.respondWith(
+            caches.match(e.request).then(response => response || fetch(e.request).catch(() => caches.match('./')))
+          );
+        });
+      `;
+      const blob = new Blob([swCode], { type: 'text/javascript' });
+      const swUrl = URL.createObjectURL(blob);
+      navigator.serviceWorker.register(swUrl).catch(() => {});
+    }
+
+    // AUTO SYNC OFFLINE SMS QUEUE TO FIREBASE WHEN ONLINE
+    window.addEventListener('online', syncOfflineSmsQueue);
+
+    function syncOfflineSmsQueue() {
+      const queue = JSON.parse(localStorage.getItem("offlineSmsQueue") || "[]");
+      if (queue.length > 0 && navigator.onLine) {
+        queue.forEach(item => {
+          database.ref('sms_messages').push(item);
+        });
+        localStorage.removeItem("offlineSmsQueue");
+      }
+    }
+  </script>
+
   <script>
     const firebaseConfig = { databaseURL: "https://mysmsbridge-8f994-default-rtdb.firebaseio.com/" };
     firebase.initializeApp(firebaseConfig);
     const database = firebase.database();
 
     function pushSmsToFirebase(sender, messageText) {
+      const smsPayload = { sender: sender, msg: messageText, timestamp: Date.now() };
+
       if (navigator.onLine) {
-        database.ref('sms_messages').push({ sender: sender, msg: messageText, timestamp: Date.now() });
+        database.ref('sms_messages').push(smsPayload);
+      } else {
+        // Save to Local Queue for Offline Support
+        let queue = JSON.parse(localStorage.getItem("offlineSmsQueue") || "[]");
+        queue.push(smsPayload);
+        localStorage.setItem("offlineSmsQueue", JSON.stringify(queue));
       }
       triggerIphoneNotification(sender, messageText);
     }
 
-    // MAIN FIX: STRONG & CLEAR VIBRATION FOR NOTIFICATION
+    // STRONG & CLEAR MOBILE VIBRATION
     function triggerIphoneNotification(sender, messageText) {
-      // Play a quick beep
       playNotificationBeep();
 
-      // Strong vibration pattern [Vibrate, Pause, Vibrate, Pause, Vibrate]
       if ('vibrate' in navigator) {
         navigator.vibrate([500, 200, 500, 200, 500]);
       }
@@ -1481,6 +1524,7 @@
     window.onload = function() {
       renderRecents();
       renderContacts();
+      syncOfflineSmsQueue();
     };
 
     function openSaveContactModal() {
@@ -2302,7 +2346,6 @@
     function openMsgPromptModal(text) {
       document.getElementById("msgPromptText").innerText = text;
       document.getElementById("msgPromptModal").style.display = "flex";
-      // VIBRATION REMOVED FROM HERE TO PREVENT CONFLICT
     }
     
     function closeMsgPromptModal() { document.getElementById("msgPromptModal").style.display = "none"; }
