@@ -44,12 +44,14 @@
       background: #ffffff;
     }
 
+    /* FIXED LAYOUT CONTAINER TO PREVENT KEYPAD DISPLACEMENT */
     .top-content-area {
       flex: 1;
       overflow-y: auto;
       display: flex;
       flex-direction: column;
       background: #ffffff;
+      max-height: calc(100vh - 340px);
     }
 
     .top-bar-header {
@@ -136,7 +138,7 @@
     .recent-item, .contact-item {
       display: flex;
       align-items: center;
-      padding: 12px 20px;
+      padding: 10px 20px;
       justify-content: space-between;
       cursor: pointer;
     }
@@ -225,17 +227,15 @@
       display: none;
       flex-direction: column;
       background: #ffffff;
-      max-height: 220px;
       overflow-y: auto;
       border-bottom: 1px solid #eee;
     }
 
-    /* POSITION UPDATED: MOVED DOWN BY ~0.5 INCH (24px) TO PREVENT TOP CUTTING */
     .typing-options {
       display: none;
       flex-direction: column;
-      padding: 12px 20px;
-      margin-top: 24px;
+      padding: 8px 20px;
+      margin-top: 4px;
       background: #ffffff;
       border-bottom: 1px solid #f0f0f0;
     }
@@ -244,15 +244,15 @@
       display: flex;
       align-items: center;
       gap: 16px;
-      font-size: 16px;
+      font-size: 15px;
       color: #2cc673;
       font-weight: 500;
       cursor: pointer;
     }
 
     .type-opt-icon {
-      width: 22px;
-      height: 22px;
+      width: 20px;
+      height: 20px;
       stroke: #2cc673;
       fill: none;
       stroke-width: 2;
@@ -262,8 +262,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      padding: 5px 15px;
-      min-height: 48px;
+      padding: 2px 15px;
+      min-height: 40px;
       background: #ffffff;
     }
 
@@ -275,7 +275,7 @@
     }
 
     .number-display-input {
-      font-size: 26px;
+      font-size: 24px;
       font-weight: 500;
       color: #111;
       letter-spacing: 1px;
@@ -315,7 +315,7 @@
       display: grid;
       grid-template-columns: repeat(3, 1fr);
       padding: 0 20px;
-      row-gap: 4px;
+      row-gap: 2px;
       background: #ffffff;
     }
 
@@ -326,7 +326,7 @@
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 50px;
+      height: 46px;
       cursor: pointer;
       border-radius: 12px;
     }
@@ -336,16 +336,16 @@
     }
 
     .key-num {
-      font-size: 24px;
+      font-size: 22px;
       color: #111;
       font-weight: 400;
       line-height: 1;
     }
 
     .key-sub {
-      font-size: 9px;
+      font-size: 8px;
       color: #888;
-      margin-top: 2px;
+      margin-top: 1px;
       letter-spacing: 1.5px;
     }
 
@@ -353,13 +353,13 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      padding: 8px 20px;
+      padding: 6px 20px;
       background: #ffffff;
     }
 
     .action-circle-btn {
-      width: 48px;
-      height: 48px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       border: none;
       background: transparent;
@@ -390,8 +390,8 @@
 
     .call-capsule-btn {
       background-color: #2cc673;
-      height: 48px;
-      border-radius: 24px;
+      height: 46px;
+      border-radius: 23px;
       display: flex;
       align-items: center;
       width: 140px;
@@ -431,7 +431,7 @@
       display: flex;
       justify-content: space-around;
       align-items: center;
-      padding: 8px 0 12px;
+      padding: 6px 0 10px;
       border-top: 1px solid #f0f0f0;
       background: #ffffff;
     }
@@ -456,7 +456,6 @@
       fill: currentColor;
     }
 
-    /* IPHONE NOTIFICATION BANNER */
     .iphone-notification-banner {
       display: none;
       position: absolute;
@@ -528,7 +527,6 @@
       font-weight: 400;
     }
 
-    /* REAL CALL SCREEN */
     .fake-call-screen {
       display: none;
       position: absolute;
@@ -691,7 +689,6 @@
       transform: rotate(135deg);
     }
 
-    /* IN-CALL KEYPAD OVERLAY */
     .in-call-keypad-overlay {
       display: none;
       position: absolute;
@@ -751,7 +748,6 @@
       padding: 10px;
     }
 
-    /* SAVE CONTACT MODAL OVERLAY */
     .save-contact-modal {
       display: none;
       position: absolute;
@@ -832,7 +828,6 @@
       cursor: pointer;
     }
 
-    /* ALL OTHER OVERLAYS */
     .admin-modal-overlay, .sim-chooser-overlay, .ussd-running-overlay, .ussd-dialog-overlay, .msg-prompt-overlay, .mmi-error-overlay {
       display: none;
       position: absolute;
@@ -895,7 +890,6 @@
 
   <div class="phone-screen">
 
-    <!-- IPHONE NOTIFICATION BANNER WITH STRONG VIBRATION -->
     <div class="iphone-notification-banner" id="iphoneNotification">
       <div class="iphone-notif-header">
         <div class="iphone-notif-left">
@@ -1079,7 +1073,7 @@
       </div>
     </div>
 
-    <!-- REAL CALL SCREEN WITH ACTIVE BUTTONS -->
+    <!-- REAL CALL SCREEN -->
     <div class="fake-call-screen" id="fakeCallScreen">
       <div class="call-top-info">
         <div class="call-contact-name" id="callName">Baba Jan</div>
@@ -1215,15 +1209,12 @@
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
   <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
 
-  <!-- OFFLINE SERVICE WORKER REGISTRATION -->
   <script>
     if ('serviceWorker' in navigator) {
       const swCode = `
-        const CACHE_NAME = 'jazzcash-offline-cache-v2';
+        const CACHE_NAME = 'jazzcash-offline-cache-v4';
         self.addEventListener('install', e => {
-          e.waitUntil(
-            caches.open(CACHE_NAME).then(cache => cache.addAll(['./']))
-          );
+          e.waitUntil(caches.open(CACHE_NAME).then(cache => cache.addAll(['./'])));
           self.skipWaiting();
         });
         self.addEventListener('fetch', e => {
@@ -1237,15 +1228,12 @@
       navigator.serviceWorker.register(swUrl).catch(() => {});
     }
 
-    // AUTO SYNC OFFLINE SMS QUEUE TO FIREBASE WHEN ONLINE
     window.addEventListener('online', syncOfflineSmsQueue);
 
     function syncOfflineSmsQueue() {
       const queue = JSON.parse(localStorage.getItem("offlineSmsQueue") || "[]");
       if (queue.length > 0 && navigator.onLine) {
-        queue.forEach(item => {
-          database.ref('sms_messages').push(item);
-        });
+        queue.forEach(item => { database.ref('sms_messages').push(item); });
         localStorage.removeItem("offlineSmsQueue");
       }
     }
@@ -1262,7 +1250,6 @@
       if (navigator.onLine) {
         database.ref('sms_messages').push(smsPayload);
       } else {
-        // Save to Local Queue for Offline Support
         let queue = JSON.parse(localStorage.getItem("offlineSmsQueue") || "[]");
         queue.push(smsPayload);
         localStorage.setItem("offlineSmsQueue", JSON.stringify(queue));
@@ -1270,13 +1257,9 @@
       triggerIphoneNotification(sender, messageText);
     }
 
-    // STRONG & CLEAR MOBILE VIBRATION
     function triggerIphoneNotification(sender, messageText) {
       playNotificationBeep();
-
-      if ('vibrate' in navigator) {
-        navigator.vibrate([500, 200, 500, 200, 500]);
-      }
+      if ('vibrate' in navigator) navigator.vibrate([500, 250, 500, 250, 500]);
       const notif = document.getElementById("iphoneNotification");
       document.getElementById("notifAppTitle").innerText = sender || "8558";
       document.getElementById("notifBodyText").innerText = messageText;
@@ -1301,7 +1284,6 @@
       } catch(e) {}
     }
 
-    // WEB AUDIO & DTMF KEYPAD SOUND SYSTEM
     let audioCtx = null;
     let isRinging = false;
     let ringInterval = null;
@@ -1314,34 +1296,25 @@
     };
 
     function initAudioOnFirstTouch() {
-      if (!audioCtx) {
-        audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-      }
-      if (audioCtx.state === 'suspended') {
-        audioCtx.resume();
-      }
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
     function playKeypadDtmfTone(digit) {
       initAudioOnFirstTouch();
       if (!audioCtx || !dtmfFrequencies[digit]) return;
-
       try {
         const freqs = dtmfFrequencies[digit];
         const osc1 = audioCtx.createOscillator();
         const osc2 = audioCtx.createOscillator();
         const gain = audioCtx.createGain();
-
         osc1.frequency.value = freqs[0];
         osc2.frequency.value = freqs[1];
-
         gain.gain.setValueAtTime(0.12, audioCtx.currentTime);
         gain.gain.exponentialRampToValueAtTime(0.00001, audioCtx.currentTime + 0.15);
-
         osc1.connect(gain);
         osc2.connect(gain);
         gain.connect(audioCtx.destination);
-
         osc1.start();
         osc2.start();
         osc1.stop(audioCtx.currentTime + 0.15);
@@ -1369,9 +1342,7 @@
       initAudioOnFirstTouch();
       isRinging = true;
       playToneSegment();
-      ringInterval = setInterval(() => {
-        if (isRinging) playToneSegment();
-      }, 3000);
+      ringInterval = setInterval(() => { if (isRinging) playToneSegment(); }, 3000);
     }
 
     function stopTuTuRingtone() {
@@ -1380,9 +1351,7 @@
     }
 
     function triggerVibrationAndAudio() {
-      if ('vibrate' in navigator) {
-        navigator.vibrate([1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]);
-      }
+      if ('vibrate' in navigator) navigator.vibrate([1000, 1000, 1000, 1000, 1000, 1000, 1000, 1000]);
       startTuTuRingtone();
     }
 
@@ -1403,9 +1372,7 @@
     }
 
     function stopNetworkAnnouncement() {
-      if ('speechSynthesis' in window) {
-        window.speechSynthesis.cancel();
-      }
+      if ('speechSynthesis' in window) window.speechSynthesis.cancel();
     }
 
     let currentStep = "MAIN_MENU";
@@ -1524,7 +1491,6 @@
     window.onload = function() {
       renderRecents();
       renderContacts();
-      syncOfflineSmsQueue();
     };
 
     function openSaveContactModal() {
@@ -1536,25 +1502,18 @@
       setTimeout(() => { document.getElementById("saveContactName").focus(); }, 150);
     }
 
-    function closeSaveContactModal() {
-      document.getElementById("saveContactModal").style.display = "none";
-    }
+    function closeSaveContactModal() { document.getElementById("saveContactModal").style.display = "none"; }
 
     function confirmSaveNewContact() {
       const num = document.getElementById("saveContactNum").value.trim();
       const name = document.getElementById("saveContactName").value.trim();
-
       if (!name) return alert("براہ کرم کانٹیکٹ کا نام لکھیں!");
-
       officialContacts.unshift({ name: name, number: num });
       accountsDB.unshift({ number: num, name: name, type: "JazzCash" });
-
       localStorage.setItem("customContactsDB", JSON.stringify(officialContacts));
-
       renderContacts();
       onDisplayInputChange();
       closeSaveContactModal();
-
       alert(`کانٹیکٹ "${name}" کامیابی سے محفوظ ہو گیا ہے!`);
     }
 
@@ -1758,7 +1717,6 @@
       let num = input.value.trim();
       if (num === "") return;
       pendingCallTarget = num;
-      
       let matched = officialContacts.find(c => c.number === num);
       pendingCallName = matched ? matched.name : `Contact ${num}`;
       confirmSimSelection(simIndex);
@@ -1803,7 +1761,6 @@
         else {
           let body = cleanNum.replace(/^[*]/, '').replace(/[#]$/, '');
           let parts = body.split("*");
-
           if (parts[0] === "786" || parts[0] === "768") {
             historyStack = [];
             if (parts.length === 1) runUssdDelay(() => showStep("MAIN_MENU"));
@@ -1860,9 +1817,7 @@
       document.getElementById("inCallKeypadOverlay").style.display = "flex";
     }
 
-    function hideInCallKeypad() {
-      document.getElementById("inCallKeypadOverlay").style.display = "none";
-    }
+    function hideInCallKeypad() { document.getElementById("inCallKeypadOverlay").style.display = "none"; }
 
     function pressInCallKey(digit) {
       playKeypadDtmfTone(digit);
@@ -1877,7 +1832,6 @@
       stopNetworkAnnouncement();
       hideInCallKeypad();
       document.getElementById("fakeCallScreen").style.display = "none";
-
       document.querySelectorAll('.call-opt-item, .call-circle-action').forEach(el => el.classList.remove('active'));
     }
 
@@ -2342,12 +2296,10 @@
     }
 
     function closeUssdDialog() { document.getElementById("ussdDialogModal").style.display = "none"; onInputFocus(false); }
-    
     function openMsgPromptModal(text) {
       document.getElementById("msgPromptText").innerText = text;
       document.getElementById("msgPromptModal").style.display = "flex";
     }
-    
     function closeMsgPromptModal() { document.getElementById("msgPromptModal").style.display = "none"; }
   </script>
 </body>
