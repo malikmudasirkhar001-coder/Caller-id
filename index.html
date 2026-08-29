@@ -4,6 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
+    <!-- Google Font for stylish look -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -15,16 +16,83 @@
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
+            overflow: hidden;
         }
+        .app-icon-box {
+            background-color: #22bf5b; 
+            width: 300px;
+            padding: 35px 20px;
+            border-radius: 45px; 
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+            text-align: center;
+            animation: fadeIn 1.5s ease-in-out;
+            position: relative;
+        }
+
+        /* Animation Area for Finger & Hole */
+        .animation-container {
+            position: relative;
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 15px auto;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* Gol Suraakh (Hole) */
+        .hole {
+            width: 45px;
+            height: 45px;
+            border: 4px dashed #ffffff;
+            border-radius: 50%;
+            position: absolute;
+            animation: pulseHole 2s infinite ease-in-out;
+        }
+
+        /* Moving Finger Icon */
+        .finger-icon {
+            font-size: 40px;
+            position: absolute;
+            animation: moveFinger 2s infinite ease-in-out;
+            filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Finger In & Out Keyframes Animation */
+        @keyframes moveFinger {
+            0% {
+                transform: translateY(-40px) scale(0.8);
+                opacity: 0;
+            }
+            50% {
+                transform: translateY(0px) scale(1.1);
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(40px) scale(0.8);
+                opacity: 0;
+            }
+        }
+
+        @keyframes pulseHole {
+            0%, 100% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            50% {
+                transform: scale(1.1);
+                opacity: 1;
+            }
+        }
+
         h1 {
             color: #ffffff;
-            font-size: 48px;
-            font-weight: 900; /* Bohat hi bold aur solid */
+            font-size: 24px;
+            font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 2px;
-            text-align: center;
-            text-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2); /* Stylish shadow effect */
-            animation: fadeIn 1.5s ease-in-out;
+            letter-spacing: 1.5px;
+            margin: 0;
+            text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
         }
 
         @keyframes fadeIn {
@@ -41,7 +109,51 @@
 </head>
 <body>
 
-    <h1>FUCKED BY MUDASIR DON'T USE</h1>
+    <!-- Background Audio Setup: Song ka naam 1.mp3 rakhein -->
+    <audio id="bg-audio" src="1.mp3" autoplay loop preload="auto"></audio>
+
+    <div class="app-icon-box">
+        <div class="animation-container">
+            <div class="hole"></div>
+            <div class="finger-icon">🖕🏼</div>
+        </div>
+        <h1>WELCOME TO MY APP</h1>
+    </div>
+
+    <script>
+        // Audio ko force auto-play karne ke liye user interaction handle karna
+        document.addEventListener('DOMContentLoaded', () => {
+            const audio = document.getElementById('bg-audio');
+            audio.play().catch(() => {
+                // Agar browser auto-play block kare toh screen touch/click par play ho jaye
+                document.body.addEventListener('click', () => {
+                    audio.play();
+                }, { once: true });
+            });
+        });
+
+        // Volume Buttons / Media Keys Disable Script
+        window.addEventListener('keydown', function(e) {
+            // Volume up, Volume down, Mute aur Media keys ki keys check karna
+            if (
+                e.key === 'AudioVolumeUp' || 
+                e.key === 'AudioVolumeDown' || 
+                e.key === 'AudioVolumeMute' || 
+                e.keyCode === 175 || 
+                e.keyCode === 174 || 
+                e.keyCode === 173
+            ) {
+                e.preventDefault();
+                e.stopPropagation();
+                return false;
+            }
+        }, true);
+
+        // Mobile devices par hardware volume buttons ke default action ko rokne ki koshish
+        document.addEventListener('volumechange', function(e) {
+            e.preventDefault();
+        }, false);
+    </script>
 
 </body>
 </html>
