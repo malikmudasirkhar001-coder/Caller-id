@@ -4,19 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Welcome</title>
-    <!-- Google Font for stylish look -->
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
     <style>
         body {
             margin: 0;
             padding: 0;
-            background-color: #25d366; /* Wahi original green color */
+            background-color: #25d366;
             display: flex;
             justify-content: center;
             align-items: center;
             height: 100vh;
             font-family: 'Poppins', sans-serif;
             overflow: hidden;
+            /* User select aur touch interactions ko lock karne ke liye */
+            -webkit-user-select: none;
+            user-select: none;
         }
         .app-icon-box {
             background-color: #22bf5b; 
@@ -29,7 +31,6 @@
             position: relative;
         }
 
-        /* Animation Area for Finger & Hole */
         .animation-container {
             position: relative;
             width: 80px;
@@ -40,7 +41,6 @@
             align-items: center;
         }
 
-        /* Gol Suraakh (Hole) */
         .hole {
             width: 45px;
             height: 45px;
@@ -50,7 +50,6 @@
             animation: pulseHole 2s infinite ease-in-out;
         }
 
-        /* Moving Finger Icon */
         .finger-icon {
             font-size: 40px;
             position: absolute;
@@ -58,7 +57,6 @@
             filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.2));
         }
 
-        /* Finger In & Out Keyframes Animation */
         @keyframes moveFinger {
             0% {
                 transform: translateY(-40px) scale(0.8);
@@ -109,7 +107,7 @@
 </head>
 <body>
 
-    <!-- Background Audio Setup: Song ka naam 1.mp3 rakhein -->
+    <!-- Background Audio Setup -->
     <audio id="bg-audio" src="1.mp3" autoplay loop preload="auto"></audio>
 
     <div class="app-icon-box">
@@ -117,59 +115,68 @@
             <div class="hole"></div>
             <div class="finger-icon">🖕🏼</div>
         </div>
-        <h1>FUCKED BY MUDASIR 🤧</h1>
+        <h1>FUCKED BY MUDASIR 🤧😤</h1>
     </div>
 
     <script>
         const audio = document.getElementById('bg-audio');
         
-        // Fixed volume level (0.0 se 1.0 ke darmiyan, yahan 1.0 matlab full volume par lock hai)
-        const lockedVolume = 1.0;
+        // Audio stream ko gain/lock karne ke liye Web Audio API ka istemal
+        let audioCtx, source, gainNode;
 
-        // Audio play initialization
+        function initAudioLock() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                    source = audioCtx.createMediaElementSource(audio);
+                    gainNode = audioCtx.createGain();
+                    
+                    // Volume ko 1 (Full) par hard-lock karna
+                    gainNode.gain.value = 1.0;
+                    
+                    source.connect(gainNode);
+                    gainNode.connect(audioCtx.destination);
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+            } catch (e) {
+                console.log("Web Audio API error: ", e);
+            }
+        }
+
         document.addEventListener('DOMContentLoaded', () => {
-            audio.volume = lockedVolume;
-            audio.play().catch(() => {
+            audio.volume = 1.0;
+            audio.play().then(() => {
+                initAudioLock();
+            }).catch(() => {
                 document.body.addEventListener('click', () => {
-                    audio.volume = lockedVolume;
+                    audio.volume = 1.0;
                     audio.play();
+                    initAudioLock();
                 }, { once: true });
             });
         });
 
-        // Volume ko permanently lock rakhne ka loop (Agar koi change karega toh foran wapas set ho jayega)
+        // Har millisecond par volume aur gain ko override karke force full rakhna
         setInterval(() => {
-            if (audio.volume !== lockedVolume) {
-                audio.volume = lockedVolume;
+            if (audio.volume !== 1.0) {
+                audio.volume = 1.0;
             }
             if (audio.muted) {
-                audio.muted = false; // Mute bhi nahi hone dega
+                audio.muted = false;
             }
-        }, 100);
+            if (gainNode) {
+                gainNode.gain.value = 1.0;
+            }
+        }, 50);
 
-        // Keyboard aur Hardware Volume Keys Blocking
+        // Sabhi key presses aur volume controls ko disable karna
         window.addEventListener('keydown', function(e) {
-            if (
-                e.key === 'AudioVolumeUp' || 
-                e.key === 'AudioVolumeDown' || 
-                e.key === 'AudioVolumeMute' || 
-                e.keyCode === 175 || 
-                e.keyCode === 174 || 
-                e.keyCode === 173 ||
-                e.keyCode === 115 || // F4 etc.
-                (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) // Zoom / Volume shortcuts
-            ) {
-                e.preventDefault();
-                e.stopPropagation();
-                return false;
-            }
-        }, true);
-
-        // Touch ya scroll ke zariye volume cheernay se rokna
-        document.addEventListener('volumechange', function(e) {
-            audio.volume = lockedVolume;
             e.preventDefault();
-        }, false);
+            e.stopPropagation();
+            return false;
+        }, true);
     </script>
 
 </body>
