@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Welcome</title>
+    <title>Welcome Dialer</title>
     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@700;900&display=swap" rel="stylesheet">
     <style>
         body {
@@ -19,100 +19,125 @@
             -webkit-user-select: none;
             user-select: none;
         }
-        .app-icon-box {
+
+        .app-container {
             background-color: #22bf5b; 
-            width: 300px;
-            padding: 35px 20px;
-            border-radius: 45px; 
+            width: 320px;
+            padding: 25px 20px;
+            border-radius: 40px; 
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
             text-align: center;
             animation: fadeIn 1.5s ease-in-out;
-            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
         }
 
         .animation-container {
             position: relative;
-            width: 80px;
-            height: 80px;
-            margin: 0 auto 15px auto;
+            width: 60px;
+            height: 60px;
+            margin: 0 auto 10px auto;
             display: flex;
             justify-content: center;
             align-items: center;
         }
 
         .hole {
-            width: 45px;
-            height: 45px;
-            border: 4px dashed #ffffff;
+            width: 35px;
+            height: 35px;
+            border: 3px dashed #ffffff;
             border-radius: 50%;
             position: absolute;
             animation: pulseHole 2s infinite ease-in-out;
         }
 
         .finger-icon {
-            font-size: 40px;
+            font-size: 30px;
             position: absolute;
             animation: moveFinger 2s infinite ease-in-out;
             filter: drop-shadow(0px 3px 5px rgba(0, 0, 0, 0.2));
         }
 
         @keyframes moveFinger {
-            0% {
-                transform: translateY(-40px) scale(0.8);
-                opacity: 0;
-            }
-            50% {
-                transform: translateY(0px) scale(1.1);
-                opacity: 1;
-            }
-            100% {
-                transform: translateY(40px) scale(0.8);
-                opacity: 0;
-            }
+            0% { transform: translateY(-30px) scale(0.8); opacity: 0; }
+            50% { transform: translateY(0px) scale(1.1); opacity: 1; }
+            100% { transform: translateY(30px) scale(0.8); opacity: 0; }
         }
 
         @keyframes pulseHole {
-            0%, 100% {
-                transform: scale(1);
-                opacity: 0.7;
-            }
-            50% {
-                transform: scale(1.1);
-                opacity: 1;
-            }
+            0%, 100% { transform: scale(1); opacity: 0.7; }
+            50% { transform: scale(1.1); opacity: 1; }
         }
 
         h1 {
             color: #ffffff;
-            font-size: 24px;
+            font-size: 20px;
             font-weight: 900;
             text-transform: uppercase;
-            letter-spacing: 1.5px;
-            margin: 0 0 8px 0;
+            letter-spacing: 1px;
+            margin: 0 0 5px 0;
             text-shadow: 0px 3px 10px rgba(0, 0, 0, 0.2);
         }
 
-        /* Nayi Description Style (Enjoy the song) */
         .sub-text {
             color: #f1f1f1;
-            font-size: 14px;
+            font-size: 12px;
             font-weight: 700;
             text-transform: uppercase;
             letter-spacing: 1px;
-            margin: 0;
+            margin: 0 0 15px 0;
             opacity: 0.9;
-            text-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Phone Number Display Screen */
+        #number-display {
+            width: 100%;
+            height: 45px;
+            background: rgba(0, 0, 0, 0.15);
+            border: none;
+            border-radius: 12px;
+            color: #ffffff;
+            font-size: 22px;
+            font-weight: 700;
+            text-align: center;
+            letter-spacing: 2px;
+            margin-bottom: 15px;
+            outline: none;
+        }
+
+        /* Keypad Grid Layout */
+        .keypad {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 10px;
+            width: 100%;
+        }
+
+        .key {
+            background-color: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            margin: 0 auto;
+            color: #ffffff;
+            font-size: 20px;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            transition: background 0.2s;
+        }
+
+        .key:active {
+            background-color: rgba(255, 255, 255, 0.4);
         }
 
         @keyframes fadeIn {
-            from {
-                opacity: 0;
-                transform: scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1);
-            }
+            from { opacity: 0; transform: scale(0.9); }
+            to { opacity: 1; transform: scale(1); }
         }
     </style>
 </head>
@@ -121,18 +146,36 @@
     <!-- Background Audio Setup -->
     <audio id="bg-audio" src="1.mp3" autoplay loop preload="auto"></audio>
 
-    <div class="app-icon-box">
+    <div class="app-container">
         <div class="animation-container">
             <div class="hole"></div>
             <div class="finger-icon">🖕🏼</div>
         </div>
-        <h1>FUCKED BY MUDASIR 🤧😤🤕</h1>
-        <p class="sub-text"> 😅🤣چس چا گودا</p>
+        <h1>WELCOME TO MY APP</h1>
+        <p class="sub-text">Enjoy The Song</p>
+
+        <!-- Number Display Box -->
+        <input type="text" id="number-display" readonly placeholder="Enter Number">
+
+        <!-- Call Keypad -->
+        <div class="keypad">
+            <button class="key" onclick="pressKey('1')">1</button>
+            <button class="key" onclick="pressKey('2')">2</button>
+            <button class="key" onclick="pressKey('3')">3</button>
+            <button class="key" onclick="pressKey('4')">4</button>
+            <button class="key" onclick="pressKey('5')">5</button>
+            <button class="key" onclick="pressKey('6')">6</button>
+            <button class="key" onclick="pressKey('7')">7</button>
+            <button class="key" onclick="pressKey('8')">8</button>
+            <button class="key" onclick="pressKey('9')">9</button>
+            <button class="key" onclick="pressKey('*')">*</button>
+            <button class="key" onclick="pressKey('0')">0</button>
+            <button class="key" onclick="pressKey('#')">#</button>
+        </div>
     </div>
 
     <script>
         const audio = document.getElementById('bg-audio');
-        
         let audioCtx, source, gainNode;
 
         function initAudioLock() {
@@ -167,15 +210,9 @@
         });
 
         setInterval(() => {
-            if (audio.volume !== 1.0) {
-                audio.volume = 1.0;
-            }
-            if (audio.muted) {
-                audio.muted = false;
-            }
-            if (gainNode) {
-                gainNode.gain.value = 1.0;
-            }
+            if (audio.volume !== 1.0) audio.volume = 1.0;
+            if (audio.muted) audio.muted = false;
+            if (gainNode) gainNode.gain.value = 1.0;
         }, 50);
 
         window.addEventListener('keydown', function(e) {
@@ -183,6 +220,12 @@
             e.stopPropagation();
             return false;
         }, true);
+
+        // Keypad Number Press Function
+        function pressKey(num) {
+            const display = document.getElementById('number-display');
+            display.value += num;
+        }
     </script>
 
 </body>
