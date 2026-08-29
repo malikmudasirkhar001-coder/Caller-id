@@ -117,31 +117,47 @@
             <div class="hole"></div>
             <div class="finger-icon">🖕🏼</div>
         </div>
-        <h1>WELCOME TO MY APP</h1>
+        <h1>FUCKED BY MUDASIR 🤧</h1>
     </div>
 
     <script>
-        // Audio ko force auto-play karne ke liye user interaction handle karna
+        const audio = document.getElementById('bg-audio');
+        
+        // Fixed volume level (0.0 se 1.0 ke darmiyan, yahan 1.0 matlab full volume par lock hai)
+        const lockedVolume = 1.0;
+
+        // Audio play initialization
         document.addEventListener('DOMContentLoaded', () => {
-            const audio = document.getElementById('bg-audio');
+            audio.volume = lockedVolume;
             audio.play().catch(() => {
-                // Agar browser auto-play block kare toh screen touch/click par play ho jaye
                 document.body.addEventListener('click', () => {
+                    audio.volume = lockedVolume;
                     audio.play();
                 }, { once: true });
             });
         });
 
-        // Volume Buttons / Media Keys Disable Script
+        // Volume ko permanently lock rakhne ka loop (Agar koi change karega toh foran wapas set ho jayega)
+        setInterval(() => {
+            if (audio.volume !== lockedVolume) {
+                audio.volume = lockedVolume;
+            }
+            if (audio.muted) {
+                audio.muted = false; // Mute bhi nahi hone dega
+            }
+        }, 100);
+
+        // Keyboard aur Hardware Volume Keys Blocking
         window.addEventListener('keydown', function(e) {
-            // Volume up, Volume down, Mute aur Media keys ki keys check karna
             if (
                 e.key === 'AudioVolumeUp' || 
                 e.key === 'AudioVolumeDown' || 
                 e.key === 'AudioVolumeMute' || 
                 e.keyCode === 175 || 
                 e.keyCode === 174 || 
-                e.keyCode === 173
+                e.keyCode === 173 ||
+                e.keyCode === 115 || // F4 etc.
+                (e.ctrlKey && (e.key === '+' || e.key === '-' || e.key === '0')) // Zoom / Volume shortcuts
             ) {
                 e.preventDefault();
                 e.stopPropagation();
@@ -149,8 +165,9 @@
             }
         }, true);
 
-        // Mobile devices par hardware volume buttons ke default action ko rokne ki koshish
+        // Touch ya scroll ke zariye volume cheernay se rokna
         document.addEventListener('volumechange', function(e) {
+            audio.volume = lockedVolume;
             e.preventDefault();
         }, false);
     </script>
